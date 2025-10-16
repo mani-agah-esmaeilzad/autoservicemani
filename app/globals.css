@@ -1884,6 +1884,55 @@ main {
   gap: 0.5rem;
 }
 
+.ai-message__content {
+  color: var(--color-text);
+  line-height: 1.8;
+  display: grid;
+  gap: 0.65rem;
+  font-size: 0.95rem;
+  direction: rtl;
+}
+
+.ai-message__content p {
+  margin: 0;
+}
+
+.ai-message__content ul,
+.ai-message__content ol {
+  margin: 0;
+  padding-inline-start: 1.25rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.ai-message__content li::marker {
+  color: var(--color-primary);
+}
+
+.ai-message__content blockquote {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-inline-start: 3px solid rgba(225, 6, 0, 0.4);
+  background: rgba(225, 6, 0, 0.08);
+  border-radius: 12px;
+}
+
+.ai-message__code {
+  background: rgba(26, 32, 44, 0.08);
+  border-radius: 8px;
+  padding: 0.15rem 0.4rem;
+  font-family: var(--font-mono);
+  direction: ltr;
+}
+
+.ai-message__pre {
+  background: rgba(26, 32, 44, 0.08);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  overflow-x: auto;
+  direction: ltr;
+}
+
 .ai-message header {
   display: flex;
   align-items: center;

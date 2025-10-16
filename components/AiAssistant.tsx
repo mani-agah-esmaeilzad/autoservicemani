@@ -1,6 +1,9 @@
 'use client';
 
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import type { Components } from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import type { ChatMessage, ChatSession } from '@/lib/types';
 
 interface AiAssistantProps {
@@ -18,6 +21,25 @@ const quickPrompts = [
   'چرا بعد از تعویض روغن چراغ چک روشن می‌ماند؟',
   'بهترین بازه زمانی تعویض فیلتر هوا برای رانندگی شهری چقدر است؟'
 ];
+
+const markdownComponents: Components = {
+  a: ({ ...props }) => <a {...props} target="_blank" rel="noreferrer" />,
+  code({ inline, className, children, ...props }) {
+    if (inline) {
+      return (
+        <code className={`ai-message__code ${className ?? ''}`} {...props}>
+          {children}
+        </code>
+      );
+    }
+
+    return (
+      <pre className={`ai-message__pre ${className ?? ''}`} {...props}>
+        <code>{children}</code>
+      </pre>
+    );
+  }
+};
 
 export default function AiAssistant({ initialSessions }: AiAssistantProps) {
   const [sessions, setSessions] = useState<ChatSession[]>(initialSessions);
@@ -347,7 +369,13 @@ export default function AiAssistant({ initialSessions }: AiAssistantProps) {
                         })}
                       </time>
                     </header>
-                    <p>{message.content}</p>
+                    <ReactMarkdown
+                      className="ai-message__content"
+                      remarkPlugins={[remarkGfm]}
+                      components={markdownComponents}
+                    >
+                      {message.content}
+                    </ReactMarkdown>
                   </article>
                 ))}
               </div>
