@@ -1,9 +1,8 @@
 'use client';
 
-import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { FormEvent, HTMLAttributes, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
-import type { CodeComponent } from 'react-markdown/lib/ast-to-react';
 import remarkGfm from 'remark-gfm';
 import type { ChatMessage } from '@/lib/types';
 
@@ -37,7 +36,13 @@ interface WindowWithSpeechRecognition extends Window {
   webkitSpeechRecognition?: SpeechRecognitionConstructor;
 }
 
-const CodeBlock: CodeComponent = ({ inline, className, children, ...props }) => {
+type MarkdownCodeComponentProps = HTMLAttributes<HTMLElement> & {
+  inline?: boolean;
+  className?: string;
+  children?: ReactNode;
+};
+
+const CodeBlock = ({ inline, className, children, ...props }: MarkdownCodeComponentProps) => {
   if (inline) {
     return (
       <code className={`chat-bubble__code ${className ?? ''}`} {...props}>

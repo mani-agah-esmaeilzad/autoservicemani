@@ -1,9 +1,17 @@
 'use client';
 
-import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  FormEvent,
+  HTMLAttributes,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
-import type { CodeComponent } from 'react-markdown/lib/ast-to-react';
 import remarkGfm from 'remark-gfm';
 import type { ChatMessage, ChatSession } from '@/lib/types';
 
@@ -45,7 +53,13 @@ const quickPrompts = [
   'بهترین بازه زمانی تعویض فیلتر هوا برای رانندگی شهری چقدر است؟'
 ];
 
-const CodeBlock: CodeComponent = ({ inline, className, children, ...props }) => {
+type MarkdownCodeComponentProps = HTMLAttributes<HTMLElement> & {
+  inline?: boolean;
+  className?: string;
+  children?: ReactNode;
+};
+
+const CodeBlock = ({ inline, className, children, ...props }: MarkdownCodeComponentProps) => {
   if (inline) {
     return (
       <code className={`ai-message__code ${className ?? ''}`} {...props}>
