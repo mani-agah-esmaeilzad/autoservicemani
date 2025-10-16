@@ -1,0 +1,6 @@
+<svg width="144" height="64" viewBox="0 0 144 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="2" y="2" width="140" height="60" rx="16" fill="#FFE9D5" stroke="#F95428" stroke-width="4" />
+  <path d="M46 44C46 32.954 54.954 24 66 24H78C89.046 24 98 32.954 98 44" fill="#F95428" />
+  <path d="M48 44C48 34.059 56.059 26 66 26H78C87.941 26 96 34.059 96 44" fill="#FFD45B" />
+  <text x="72" y="50" text-anchor="middle" fill="#C11F1F" font-family="Vazirmatn, sans-serif" font-size="16" font-weight="700">SHELL</text>
+</svg>
