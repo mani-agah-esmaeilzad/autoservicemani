@@ -21,10 +21,9 @@ const quickPrompts = [
   'چرا بعد از تعویض روغن چراغ چک روشن می‌ماند؟',
   'بهترین بازه زمانی تعویض فیلتر هوا برای رانندگی شهری چقدر است؟'
 ];
-
 const markdownComponents: Components = {
   a: ({ ...props }) => <a {...props} target="_blank" rel="noreferrer" />,
-  code({ inline, className, children, ...props }) {
+  code({ inline, className, children, ...props }: any) {
     if (inline) {
       return (
         <code className={`ai-message__code ${className ?? ''}`} {...props}>
@@ -40,6 +39,7 @@ const markdownComponents: Components = {
     );
   }
 };
+
 
 export default function AiAssistant({ initialSessions }: AiAssistantProps) {
   const [sessions, setSessions] = useState<ChatSession[]>(initialSessions);
@@ -73,10 +73,11 @@ export default function AiAssistant({ initialSessions }: AiAssistantProps) {
       recognition.maxAlternatives = 1;
       recognition.onresult = (event: any) => {
         const transcript = Array.from(event.results)
-          .map((result) => result[0]?.transcript ?? '')
+          .map((result: any) => result[0]?.transcript ?? '')
           .join(' ');
         setComposerValue(transcript);
       };
+
       recognition.onend = () => {
         setIsRecording(false);
       };
@@ -202,9 +203,9 @@ export default function AiAssistant({ initialSessions }: AiAssistantProps) {
         prev.map((session) =>
           session.id === activeSessionId
             ? {
-                ...session,
-                messages: session.messages.filter((messageItem) => messageItem.id !== optimisticId)
-              }
+              ...session,
+              messages: session.messages.filter((messageItem) => messageItem.id !== optimisticId)
+            }
             : session
         )
       );
@@ -421,9 +422,3 @@ export default function AiAssistant({ initialSessions }: AiAssistantProps) {
   );
 }
 
-declare global {
-  interface Window {
-    webkitSpeechRecognition?: any;
-    SpeechRecognition?: any;
-  }
-}
