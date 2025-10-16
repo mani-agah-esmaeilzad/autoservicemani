@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
+import type { CodeComponent } from 'react-markdown/lib/ast-to-react';
 import remarkGfm from 'remark-gfm';
 import type { ChatMessage } from '@/lib/types';
 
@@ -36,23 +37,25 @@ interface WindowWithSpeechRecognition extends Window {
   webkitSpeechRecognition?: SpeechRecognitionConstructor;
 }
 
-const markdownComponents: Components = {
-  a: ({ ...props }) => <a {...props} target="_blank" rel="noreferrer" />,
-  code({ inline, className, children, ...props }) {
-    if (inline) {
-      return (
-        <code className={`chat-bubble__code ${className ?? ''}`} {...props}>
-          {children}
-        </code>
-      );
-    }
-
+const CodeBlock: CodeComponent = ({ inline, className, children, ...props }) => {
+  if (inline) {
     return (
-      <pre className={`chat-bubble__pre ${className ?? ''}`} {...props}>
-        <code>{children}</code>
-      </pre>
+      <code className={`chat-bubble__code ${className ?? ''}`} {...props}>
+        {children}
+      </code>
     );
   }
+
+  return (
+    <pre className={`chat-bubble__pre ${className ?? ''}`} {...props}>
+      <code>{children}</code>
+    </pre>
+  );
+};
+
+const markdownComponents: Components = {
+  a: ({ ...props }) => <a {...props} target="_blank" rel="noreferrer" />,
+  code: CodeBlock
 };
 
 export default function ChatPage() {

@@ -3,6 +3,7 @@
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
+import type { CodeComponent } from 'react-markdown/lib/ast-to-react';
 import remarkGfm from 'remark-gfm';
 import type { ChatMessage, ChatSession } from '@/lib/types';
 
@@ -44,23 +45,25 @@ const quickPrompts = [
   'بهترین بازه زمانی تعویض فیلتر هوا برای رانندگی شهری چقدر است؟'
 ];
 
-const markdownComponents: Components = {
-  a: ({ ...props }) => <a {...props} target="_blank" rel="noreferrer" />,
-  code({ inline, className, children, ...props }) {
-    if (inline) {
-      return (
-        <code className={`ai-message__code ${className ?? ''}`} {...props}>
-          {children}
-        </code>
-      );
-    }
-
+const CodeBlock: CodeComponent = ({ inline, className, children, ...props }) => {
+  if (inline) {
     return (
-      <pre className={`ai-message__pre ${className ?? ''}`} {...props}>
-        <code>{children}</code>
-      </pre>
+      <code className={`ai-message__code ${className ?? ''}`} {...props}>
+        {children}
+      </code>
     );
   }
+
+  return (
+    <pre className={`ai-message__pre ${className ?? ''}`} {...props}>
+      <code>{children}</code>
+    </pre>
+  );
+};
+
+const markdownComponents: Components = {
+  a: ({ ...props }) => <a {...props} target="_blank" rel="noreferrer" />,
+  code: CodeBlock
 };
 
 export default function AiAssistant({ initialSessions }: AiAssistantProps) {
