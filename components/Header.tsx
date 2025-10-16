@@ -1,18 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import NavMenu, { categoryGroups } from './NavMenu';
 import SearchBar from './SearchBar';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 const navLinks = [
   { href: '/', label: 'صفحه اصلی' },
   { href: '/store', label: 'فروشگاه' },
-  { href: '/assistant', label: 'دستیار فنی' },
-  { href: '/services', label: 'خدمات حضوری' },
+  { href: '/assistant', label: 'دستیار هوشمند' },
   { href: '/about', label: 'درباره ما' },
   { href: '/contact', label: 'تماس با ما' }
 ];
@@ -22,9 +22,12 @@ export default function Header() {
   const {
     state: { items }
   } = useCart();
+  const { isAuthenticated, user, logout } = useAuth();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [portalElement, setPortalElement] = useState<HTMLElement | null>(null);
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+  const accountMenuRef = useRef<HTMLDivElement | null>(null);
 
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
 
@@ -55,7 +58,23 @@ export default function Header() {
 
   useEffect(() => {
     setIsDrawerOpen(false);
+    setIsAccountMenuOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    const handleClick = (event: MouseEvent) => {
+      if (!accountMenuRef.current?.contains(event.target as Node)) {
+        setIsAccountMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
 
   useEffect(() => {
     if (typeof document === 'undefined') {
@@ -170,11 +189,77 @@ export default function Header() {
         </div>
 
         <div className="header-actions">
-          <Link href="/account" className="account-link">
-            حساب من
-          </Link>
-          <Link href="/cart" className="cart-link">
-            سبد خرید
+          <div className="account-actions" ref={accountMenuRef}>
+            <button
+              type="button"
+              className={`icon-button ${isAccountMenuOpen ? 'is-active' : ''}`}
+              aria-haspopup="true"
+              aria-expanded={isAccountMenuOpen}
+              aria-label="مدیریت حساب"
+              onClick={() => setIsAccountMenuOpen((prev) => !prev)}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M12 12c2.761 0 5-2.462 5-5.5S14.761 1 12 1 7 3.462 7 6.5 9.239 12 12 12zm0 2c-3.866 0-7 3.038-7 6.667C5 21.403 5.597 22 6.333 22h11.334C18.403 22 19 21.403 19 20.667 19 17.038 15.866 14 12 14z"
+                  fill="currentColor"
+                />
+              </svg>
+            </button>
+            {isAccountMenuOpen && (
+              <div className="account-menu" role="menu">
+                <div className="account-menu__header">
+                  <span className="badge">حساب کاربری</span>
+                  <strong>{isAuthenticated ? user?.name : 'کاربر مهمان'}</strong>
+                  <small>{isAuthenticated ? user?.email : 'برای مدیریت سفارش‌ها وارد شوید'}</small>
+                </div>
+                <div className="account-menu__links">
+                  {isAuthenticated ? (
+                    <>
+                      <Link href="/account" role="menuitem" onClick={() => setIsAccountMenuOpen(false)}>
+                        مدیریت حساب
+                      </Link>
+                      <Link href="/cart" role="menuitem" onClick={() => setIsAccountMenuOpen(false)}>
+                        سفارش‌های من
+                      </Link>
+                      <button
+                        type="button"
+                        role="menuitem"
+                        onClick={() => {
+                          logout();
+                          setIsAccountMenuOpen(false);
+                        }}
+                      >
+                        خروج از حساب
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link href="/login" role="menuitem" onClick={() => setIsAccountMenuOpen(false)}>
+                        ورود به سامانه
+                      </Link>
+                      <Link href="/register" role="menuitem" onClick={() => setIsAccountMenuOpen(false)}>
+                        ایجاد حساب جدید
+                      </Link>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <Link href="/cart" className="icon-button cart-button" aria-label="سبد خرید">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M7 4h-2l-1 2v2h2l2.68 7.805A2 2 0 0010.58 17h6.94a2 2 0 001.9-1.368L22 6H7"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <circle cx="10" cy="20" r="1.5" fill="currentColor" />
+              <circle cx="18" cy="20" r="1.5" fill="currentColor" />
+            </svg>
             {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
           </Link>
         </div>

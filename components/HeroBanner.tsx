@@ -10,14 +10,14 @@ export default function HeroBanner() {
             تجربه‌ای مینیمال و حرفه‌ای از نگهداری خودرو با <span className="text-primary">Auto Service Mani</span>
           </h1>
           <p style={{ color: 'var(--color-muted)', marginBottom: '1.75rem' }}>
-            سفارش آنلاین روغن موتور، قطعات مصرفی و رزرو خدمات حرفه‌ای با پشتیبانی 24 ساعته، ارسال سریع و تضمین اصالت کالا.
+            سفارش آنلاین روغن موتور، قطعات مصرفی و دریافت مشاوره تخصصی با دستیار هوشمند اتو سرویس مانی در کنار ارسال سریع و تضمین اصالت کالا.
           </p>
           <div className="hero-actions">
             <Link href="/store" className="btn btn-primary">
               ورود به فروشگاه
             </Link>
-            <Link href="/services" className="btn btn-ghost">
-              رزرو خدمات حضوری
+            <Link href="/assistant" className="btn btn-ghost">
+              مشاوره فنی هوشمند
             </Link>
           </div>
         </div>

@@ -7,7 +7,7 @@ const initialAssistantMessage: ChatMessage = {
   id: 'intro',
   role: 'assistant',
   content:
-    'سلام! من دستیار هوشمند Auto Service Mani هستم. با اتصال به Google AI می‌توانم در مورد روغن، سرویس‌های فنی و نگهداری خودرو راهنمایی‌تان کنم.',
+    'سلام! من دستیار هوشمند Auto Service Mani هستم. هر سوالی درباره روغن، سرویس‌های فنی و نگهداری خودرو دارید بپرسید تا راهنمایی تخصصی دریافت کنید.',
   createdAt: new Date().toISOString()
 };
 
@@ -116,7 +116,7 @@ export default function ChatPage() {
         content:
           error instanceof Error
             ? error.message
-            : 'در حال حاضر به Google AI متصل نیستیم. لطفاً بعداً تلاش کنید یا با پشتیبانی تماس بگیرید.',
+            : 'در حال حاضر اتصال به دستیار هوشمند در دسترس نیست. لطفاً بعداً تلاش کنید یا با پشتیبانی تماس بگیرید.',
         createdAt: new Date().toISOString()
       };
       setMessages((prev) => [...prev, fallback]);
@@ -146,12 +146,12 @@ export default function ChatPage() {
             <span className="badge">دستیار هوشمند</span>
             <h1>چت تخصصی فنی خودرو</h1>
             <p>
-              گفت‌وگو با هوش مصنوعی گوگل برای دریافت راهکارهای نگهداری، انتخاب روغن مناسب و تشخیص مشکلات رایج خودرو.
+              گفت‌وگو با دستیار هوشمند برای دریافت راهکارهای نگهداری، انتخاب روغن مناسب و تشخیص مشکلات رایج خودرو.
             </p>
           </div>
           <div className="chat-page__status">
             <span className="status-dot status-dot--online" aria-hidden />
-            <span>اتصال به Google AI</span>
+            <span>اتصال دستیار هوشمند</span>
           </div>
         </header>
 
@@ -201,8 +201,7 @@ export default function ChatPage() {
 
         <footer className="chat-page__footer">
           <p>
-            پاسخ‌های ارائه شده توسط Google AI صرفاً جهت راهنمایی هستند. برای تعمیرات حساس حتماً با کارشناسان حضوری Auto Service Mani
-            هماهنگ کنید.
+            پاسخ‌های ارائه شده توسط دستیار هوشمند صرفاً جهت راهنمایی هستند. برای تعمیرات حساس حتماً با کارشناسان حضوری Auto Service Mani هماهنگ کنید.
           </p>
         </footer>
       </div>

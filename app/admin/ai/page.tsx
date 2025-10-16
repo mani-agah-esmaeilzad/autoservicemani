@@ -14,9 +14,9 @@ export default function AdminAiPage() {
   return (
     <div style={{ display: 'grid', gap: '1.5rem' }}>
       <header>
-        <h1>مدیریت دستیار هوش مصنوعی</h1>
+        <h1>مدیریت دستیار هوشمند</h1>
         <p style={{ color: 'var(--color-muted)' }}>
-          نظارت بر عملکرد گفت‌وگوهای متصل به Google AI و رصد رضایت کاربران.
+          نظارت بر عملکرد گفت‌وگوهای متصل به دستیار هوشمند و رصد رضایت کاربران.
         </p>
       </header>
 
@@ -73,10 +73,10 @@ export default function AdminAiPage() {
 
       <section className="card" style={{ display: 'grid', gap: '1rem' }}>
         <header>
-          <h2>چک‌لیست راه‌اندازی Google AI</h2>
+          <h2>چک‌لیست راه‌اندازی دستیار هوشمند</h2>
         </header>
         <ul className="ai-admin-checklist">
-          <li>تنظیم متغیر محیطی GOOGLE_AI_API_KEY در سرور و محدودسازی دامنه‌های مجاز.</li>
+          <li>تنظیم متغیرهای ASM_ASSISTANT_API_KEY و ASM_ASSISTANT_API_ENDPOINT در سرور و محدودسازی دامنه‌های مجاز.</li>
           <li>بازبینی پاسخ‌های نمونه برای اطمینان از تمرکز بر موضوعات فنی خودرو.</li>
           <li>ایجاد اسکریپت مانیتورینگ برای رصد خطاهای اتصال و هشدار خودکار.</li>
           <li>هماهنگی با تیم پشتیبانی برای رسیدگی دستی به گفتگوهای با رضایت پایین‌تر از ۷۰٪.</li>

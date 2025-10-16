@@ -175,7 +175,7 @@ export default function AiAssistant({ initialSessions }: AiAssistantProps) {
       }
     } catch (requestError) {
       console.error(requestError);
-      setError('ارسال پیام با مشکل مواجه شد. اتصال اینترنت یا تنظیمات کلید Google AI را بررسی کنید.');
+      setError('ارسال پیام با مشکل مواجه شد. اتصال اینترنت یا تنظیمات دستیار هوشمند را بررسی کنید.');
       setSessions((prev) =>
         prev.map((session) =>
           session.id === activeSessionId
@@ -203,7 +203,7 @@ export default function AiAssistant({ initialSessions }: AiAssistantProps) {
 
   const toggleRecording = useCallback(() => {
     if (!recordingSupported || !recognitionRef.current) {
-      setError('مرورگر شما از ورودی صوتی Google Web Speech پشتیبانی نمی‌کند.');
+      setError('مرورگر شما از ورودی صوتی Web Speech پشتیبانی نمی‌کند.');
       return;
     }
 
@@ -222,7 +222,7 @@ export default function AiAssistant({ initialSessions }: AiAssistantProps) {
       <header className="ai-assistant__header">
         <div>
           <span className="badge">دستیار فنی هوشمند</span>
-          <h1>چت تخصصی با Google AI</h1>
+          <h1>چت تخصصی با دستیار هوشمند</h1>
           <p>
             هر سوالی درباره نگهداری خودرو، انتخاب روغن یا عیب‌یابی فنی دارید بپرسید تا پاسخ دقیق و مرحله‌به‌مرحله دریافت کنید.
           </p>
@@ -235,7 +235,7 @@ export default function AiAssistant({ initialSessions }: AiAssistantProps) {
               checked={voiceReplyEnabled && speechSupported}
               onChange={(event) => setVoiceReplyEnabled(event.target.checked)}
             />
-            پاسخ صوتی Google
+            پاسخ صوتی هوشمند
           </label>
           <button
             type="button"
@@ -323,7 +323,7 @@ export default function AiAssistant({ initialSessions }: AiAssistantProps) {
               <div className="ai-assistant__conversation-header">
                 <div>
                   <h2>{activeSession.topic}</h2>
-                  <p>گفتگوی متصل به Google AI با تمرکز بر موضوعات فنی خودرو.</p>
+                  <p>گفتگوی متصل به دستیار هوشمند با تمرکز بر موضوعات فنی خودرو.</p>
                 </div>
                 <div className="ai-assistant__conversation-meta">
                   <span>رضایت میانگین: {activeSession.satisfaction}%</span>
@@ -382,7 +382,7 @@ export default function AiAssistant({ initialSessions }: AiAssistantProps) {
           ) : (
             <div className="ai-assistant__empty">
               <strong>برای شروع گفت‌وگو، یک موضوع انتخاب کنید یا گفت‌وگوی جدید بسازید.</strong>
-              <p>دستیار هوشمند تنها روی سوالات فنی خودرو پاسخ می‌دهد و از Google AI برای تحلیل‌های تخصصی استفاده می‌کند.</p>
+              <p>دستیار هوشمند تنها روی سوالات فنی خودرو پاسخ می‌دهد و برای تحلیل‌های تخصصی از پایگاه دانش فنی استفاده می‌کند.</p>
             </div>
           )}
         </section>

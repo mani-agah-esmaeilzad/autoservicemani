@@ -14,7 +14,7 @@ export default function AdminSettingsPage() {
     enableVoiceReplies: true,
     knowledgeBaseUrl: 'https://autoservicemani.ir/knowledge-base',
     aiEscalationThreshold: 70,
-    googleKeyConfigured: false
+    assistantKeyConfigured: false
   });
 
   return (
@@ -76,16 +76,16 @@ export default function AdminSettingsPage() {
         <header>
           <h2>پیکربندی دستیار هوش مصنوعی</h2>
           <p style={{ color: 'var(--color-muted)', margin: 0 }}>
-            اتصال به Google AI و نحوه پاسخ‌گویی صوتی را از این قسمت مدیریت کنید.
+            اتصال به دستیار هوشمند و نحوه پاسخ‌گویی صوتی را از این قسمت مدیریت کنید.
           </p>
         </header>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <input
             type="checkbox"
-            checked={form.googleKeyConfigured}
-            onChange={(event) => setForm((prev) => ({ ...prev, googleKeyConfigured: event.target.checked }))}
+            checked={form.assistantKeyConfigured}
+            onChange={(event) => setForm((prev) => ({ ...prev, assistantKeyConfigured: event.target.checked }))}
           />
-          کلید GOOGLE_AI_API_KEY روی سرور تنظیم شده است
+          کلید ASM_ASSISTANT_API_KEY روی سرور تنظیم شده است
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <input

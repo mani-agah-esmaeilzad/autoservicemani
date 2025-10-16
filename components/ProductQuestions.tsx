@@ -53,7 +53,7 @@ export default function ProductQuestions({ productId, initialQuestions }: Produc
       <header>
         <div>
           <h3>پرسش و پاسخ کاربران</h3>
-          <p>سوالات فنی خود را مطرح کنید، تیم اتو سرویس مانی با کمک Google AI پاسخ می‌دهد.</p>
+          <p>سوالات فنی خود را مطرح کنید، تیم اتو سرویس مانی با کمک دستیار هوشمند پاسخ می‌دهد.</p>
         </div>
       </header>
 

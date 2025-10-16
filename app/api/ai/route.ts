@@ -39,7 +39,12 @@ function buildFallbackAnswer(message: string) {
   }
 
   if (normalized.includes('سرویس') || normalized.includes('service')) {
-    return `پکیج‌های خدمات حضوری ما شامل: ${services.map((service) => `${service.name} (${service.duration})`).join('، ')} است. می‌توانید از طریق پنل کاربری زمان رزرو را مشخص کنید.`;
+    if (services.length > 0) {
+      return `پکیج‌های خدمات حضوری ما شامل: ${services
+        .map((service) => `${service.name} (${service.duration})`)
+        .join('، ')} است. می‌توانید از طریق پنل کاربری زمان رزرو را مشخص کنید.`;
+    }
+    return 'برای رزرو سرویس حضوری لطفاً با تیم پشتیبانی تماس بگیرید یا از طریق پنل کاربری درخواست جدید ثبت کنید.';
   }
 
   if (normalized.includes('برند') || normalized.includes('brand')) {
@@ -58,30 +63,33 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'پیام کاربر دریافت نشد.' }, { status: 400 });
   }
 
-  const apiKey = process.env.GOOGLE_AI_API_KEY;
-  if (apiKey) {
+  const apiKey = process.env.ASM_ASSISTANT_API_KEY;
+  const endpoint = process.env.ASM_ASSISTANT_API_ENDPOINT;
+  if (apiKey && endpoint) {
     try {
-      const response = await fetch(
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' + apiKey,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [
-              ...(body.history ?? []).map((item) => ({ role: item.role, parts: [{ text: item.content }] })),
-              { role: 'user', parts: [{ text: `${message}\nفقط درباره راهکارهای فنی خودرو پاسخ بده.` }] }
-            ]
-          })
-        }
-      );
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          message,
+          history: body.history ?? []
+        })
+      });
 
-      const payload = await response.json();
-      const reply = payload?.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (reply) {
-        return NextResponse.json({ reply });
+      if (response.ok) {
+        const payload = (await response.json()) as { reply?: string };
+        if (payload?.reply) {
+          return NextResponse.json({ reply: payload.reply });
+        }
+      } else {
+        const payload = await response.json().catch(() => ({}));
+        console.error('Intelligent assistant bridge error:', payload);
       }
     } catch (error) {
-      console.error('Google AI request failed:', error);
+      console.error('Intelligent assistant request failed:', error);
     }
   }
 

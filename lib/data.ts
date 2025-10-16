@@ -426,29 +426,7 @@ if (!globalStore.__autoServiceData) {
         questions: []
       }
     ],
-    services: [
-      {
-        id: 'srv-1',
-        name: 'تعویض روغن حرفه‌ای',
-        description: 'تعویض روغن با دستگاه تمام اتوماتیک و استفاده از روغن اورجینال.',
-        duration: '45 دقیقه',
-        price: 320000
-      },
-      {
-        id: 'srv-2',
-        name: 'بازرسی فنی کامل',
-        description: 'بازرسی سیستم ترمز، تعلیق و مایعات حیاتی خودرو توسط متخصصین.',
-        duration: '60 دقیقه',
-        price: 450000
-      },
-      {
-        id: 'srv-3',
-        name: 'تنظیم موتور و دیاگ',
-        description: 'عیب‌یابی رایانه‌ای و تنظیم دقیق موتور برای عملکرد ایده‌آل.',
-        duration: '75 دقیقه',
-        price: 670000
-      }
-    ],
+    services: [],
     reviews: [
       {
         id: 'rev-1',
@@ -491,41 +469,7 @@ if (!globalStore.__autoServiceData) {
         createdAt: '2024-03-01T18:12:00.000Z'
       }
     ],
-    orders: [
-      {
-        id: 'ord-1024',
-        customerName: 'علی رضایی',
-        customerEmail: 'ali@example.com',
-        total: 2350000,
-        status: 'در انتظار',
-        createdAt: '2024-03-03T13:42:00.000Z',
-        items: [
-          { productId: 'prd-1', quantity: 2, price: 1480000 },
-          { productId: 'prd-3', quantity: 1, price: 285000 }
-        ]
-      },
-      {
-        id: 'ord-1023',
-        customerName: 'مریم عباسی',
-        customerEmail: 'maryam@example.com',
-        total: 1840000,
-        status: 'تکمیل شده',
-        createdAt: '2024-02-12T09:15:00.000Z',
-        items: [
-          { productId: 'prd-2', quantity: 1, price: 1265000 },
-          { productId: 'prd-4', quantity: 1, price: 540000 }
-        ]
-      },
-      {
-        id: 'ord-1019',
-        customerName: 'حسین گودرزی',
-        customerEmail: 'hossein@example.com',
-        total: 980000,
-        status: 'لغو شده',
-        createdAt: '2023-12-21T16:20:00.000Z',
-        items: [{ productId: 'prd-6', quantity: 1, price: 980000 }]
-      }
-    ],
+    orders: [],
     brands: [
       {
         id: 'brand-shell',
@@ -594,136 +538,21 @@ if (!globalStore.__autoServiceData) {
     ],
     userDashboard: {
       profile: {
-        id: 'usr-1',
-        name: 'علی رضایی',
-        email: 'ali@example.com',
-        phone: '09120000000',
-        membershipTier: 'طلایی',
-        loyaltyPoints: 4850,
-        preferredVehicle: 'پژو 206 تیپ 5 - 1398',
-        defaultAddress: 'تهران، خیابان ستارخان، خیابان خودرو، پلاک 12',
-        joinDate: '2021-04-12T00:00:00.000Z'
+        id: '',
+        name: '',
+        email: '',
+        phone: '',
+        membershipTier: 'سطح پایه',
+        loyaltyPoints: 0,
+        preferredVehicle: '',
+        defaultAddress: '',
+        joinDate: ''
       },
-      orders: [
-        { id: 'ord-1024', status: 'در انتظار ارسال', total: 2350000, createdAt: '2024-03-03T13:42:00.000Z' },
-        { id: 'ord-1023', status: 'تکمیل شده', total: 1840000, createdAt: '2024-02-12T09:15:00.000Z' },
-        { id: 'ord-1019', status: 'لغو شده', total: 980000, createdAt: '2023-12-21T16:20:00.000Z' }
-      ],
-      notifications: [
-        {
-          id: 'ntf-1',
-          title: 'سفارش شما آماده ارسال است',
-          message: 'سفارش ORD-1024 پس از تایید نهایی در مسیر ارسال قرار می‌گیرد.',
-          type: 'order',
-          createdAt: '2024-03-04T08:20:00.000Z',
-          read: false
-        },
-        {
-          id: 'ntf-2',
-          title: 'تخفیف ویژه روغن شل',
-          message: 'فقط تا جمعه 15٪ تخفیف بر روی روغن‌های سری Shell Ultra.',
-          type: 'promotion',
-          createdAt: '2024-03-01T10:00:00.000Z',
-          read: false
-        },
-        {
-          id: 'ntf-3',
-          title: 'پاسخ به تیکت پشتیبانی',
-          message: 'کارشناس ما به تیکت مربوط به «صدای موتور پس از تعویض روغن» پاسخ داده است.',
-          type: 'support',
-          createdAt: '2024-02-28T14:30:00.000Z',
-          read: true
-        }
-      ],
-      tickets: [
-        {
-          id: 'tkt-204',
-          subject: 'بررسی صدای موتور بعد از سرویس',
-          status: 'در حال بررسی',
-          priority: 'متوسط',
-          createdAt: '2024-02-27T11:00:00.000Z',
-          updatedAt: '2024-03-02T15:45:00.000Z',
-          messages: [
-            {
-              id: 'msg-1',
-              sender: 'user',
-              message: 'بعد از تعویض روغن هنوز کمی صدا شنیده می‌شود، راهنمایی می‌خواستم.',
-              createdAt: '2024-02-27T11:00:00.000Z'
-            },
-            {
-              id: 'msg-2',
-              sender: 'agent',
-              message: 'لطفاً چند کیلومتر رانندگی کنید و در صورت ادامه مشکل، زمان مراجعه حضوری بگیرید.',
-              createdAt: '2024-02-28T09:20:00.000Z'
-            }
-          ]
-        },
-        {
-          id: 'tkt-193',
-          subject: 'سوال درباره ضمانت جامپ استارتر',
-          status: 'بسته شده',
-          priority: 'کم',
-          createdAt: '2024-01-15T09:30:00.000Z',
-          updatedAt: '2024-01-16T12:05:00.000Z',
-          messages: [
-            {
-              id: 'msg-3',
-              sender: 'user',
-              message: 'گارانتی دستگاه در صورت افت ولتاژ هم قابل استفاده است؟',
-              createdAt: '2024-01-15T09:30:00.000Z'
-            },
-            {
-              id: 'msg-4',
-              sender: 'agent',
-              message: 'بله، در صورت نقص فنی مرتبط با باتری یا مدار محافظ گارانتی فعال است.',
-              createdAt: '2024-01-15T13:45:00.000Z'
-            }
-          ]
-        }
-      ]
+      orders: [],
+      notifications: [],
+      tickets: []
     },
-    aiSessions: [
-      {
-        id: 'ai-1',
-        topic: 'انتخاب روغن موتور برای پژو 206',
-        lastActive: '2024-03-03T17:40:00.000Z',
-        satisfaction: 96,
-        messages: [
-          {
-            id: 'ai-1-msg-1',
-            role: 'user',
-            content: 'برای 206 تیپ 5 چه روغنی پیشنهاد می‌کنید؟',
-            createdAt: '2024-03-03T17:30:00.000Z'
-          },
-          {
-            id: 'ai-1-msg-2',
-            role: 'assistant',
-            content: 'گوگل AI: روغن 5W-30 با استاندارد PSA B71 2290 بهترین عملکرد را دارد.',
-            createdAt: '2024-03-03T17:31:00.000Z'
-          }
-        ]
-      },
-      {
-        id: 'ai-2',
-        topic: 'تحلیل لرزش موتور پراید پس از تعویض شمع',
-        lastActive: '2024-02-25T09:15:00.000Z',
-        satisfaction: 88,
-        messages: [
-          {
-            id: 'ai-2-msg-1',
-            role: 'user',
-            content: 'بعد از تعویض شمع موتور لرزش دارد، علت چیست؟',
-            createdAt: '2024-02-25T09:10:00.000Z'
-          },
-          {
-            id: 'ai-2-msg-2',
-            role: 'assistant',
-            content: 'گوگل AI: اتصال وایرها و برنامه‌ریزی ECU را بررسی کنید و از گشتاور سفت‌کردن صحیح مطمئن شوید.',
-            createdAt: '2024-02-25T09:12:00.000Z'
-          }
-        ]
-      }
-    ]
+    aiSessions: []
   };
 }
 

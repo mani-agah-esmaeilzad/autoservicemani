@@ -44,7 +44,7 @@ export default function AdminDashboardPage() {
         <div className="card">
           <span className="badge">رضایت دستیار هوشمند</span>
           <strong style={{ fontSize: '2rem' }}>{averageSatisfaction}%</strong>
-          <p style={{ color: 'var(--color-muted)' }}>میانگین رضایت گفتگوهای Google AI</p>
+          <p style={{ color: 'var(--color-muted)' }}>میانگین رضایت گفتگوهای دستیار هوشمند</p>
         </div>
         <div className="card">
           <span className="badge">تیکت‌های باز</span>

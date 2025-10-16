@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -7,7 +9,7 @@ const links = [
   { href: '/admin/products', label: 'مدیریت محصولات' },
   { href: '/admin/customers', label: 'مدیریت مشتریان' },
   { href: '/admin/support', label: 'پشتیبانی و تیکت‌ها' },
-  { href: '/admin/ai', label: 'دستیار هوش مصنوعی' },
+  { href: '/admin/ai', label: 'دستیار هوشمند اتو سرویس مانی' },
   { href: '/admin/reports', label: 'گزارش‌ها و تحلیل' },
   { href: '/admin/settings', label: 'تنظیمات سامانه' }
 ];
@@ -19,7 +21,7 @@ export default function AdminSidebar() {
     <aside style={{ background: '#fff', borderLeft: '1px solid #ececf1', padding: '2rem 1.5rem', display: 'grid', gap: '1.5rem' }}>
       <div>
         <div style={{ fontWeight: 700, fontSize: '1.2rem' }}>پنل مدیریت</div>
-        <p style={{ color: 'var(--color-muted)', marginTop: '0.5rem' }}>مدیریت جامع فروشگاه و خدمات حضوری</p>
+        <p style={{ color: 'var(--color-muted)', marginTop: '0.5rem' }}>مدیریت یکپارچه فروشگاه و خدمات هوشمند</p>
       </div>
       <nav style={{ display: 'grid', gap: '0.35rem' }}>
         {links.map((link) => {
