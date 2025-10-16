@@ -37,9 +37,11 @@ export default function Header() {
       <div className="container header-inner">
         <button
           type="button"
-          className="mobile-toggle"
+          className={`mobile-toggle ${isDrawerOpen ? 'open' : ''}`}
           aria-label="باز کردن منو"
-          onClick={() => setIsDrawerOpen(true)}
+          aria-controls="primary-mobile-drawer"
+          aria-expanded={isDrawerOpen}
+          onClick={() => setIsDrawerOpen((prev) => !prev)}
         >
           <span />
         </button>
@@ -75,7 +77,11 @@ export default function Header() {
         </div>
       </div>
 
-      <aside className={`mobile-drawer ${isDrawerOpen ? 'open' : ''}`} aria-hidden={!isDrawerOpen}>
+      <aside
+        id="primary-mobile-drawer"
+        className={`mobile-drawer ${isDrawerOpen ? 'open' : ''}`}
+        aria-hidden={!isDrawerOpen}
+      >
         <div className="mobile-drawer__header">
           <span style={{ fontWeight: 700 }}>منو</span>
           <button type="button" className="mobile-drawer__close" onClick={() => setIsDrawerOpen(false)}>
