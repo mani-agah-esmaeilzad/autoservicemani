@@ -1,6 +1,9 @@
 'use client';
 
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import type { Components } from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import type { ChatMessage } from '@/lib/types';
 
 const initialAssistantMessage: ChatMessage = {
@@ -28,12 +31,29 @@ interface SpeechRecognitionInstance {
 
 type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance;
 
-declare global {
-  interface Window {
-    SpeechRecognition?: SpeechRecognitionConstructor;
-    webkitSpeechRecognition?: SpeechRecognitionConstructor;
-  }
+interface WindowWithSpeechRecognition extends Window {
+  SpeechRecognition?: SpeechRecognitionConstructor;
+  webkitSpeechRecognition?: SpeechRecognitionConstructor;
 }
+
+const markdownComponents: Components = {
+  a: ({ ...props }) => <a {...props} target="_blank" rel="noreferrer" />,
+  code({ inline, className, children, ...props }) {
+    if (inline) {
+      return (
+        <code className={`chat-bubble__code ${className ?? ''}`} {...props}>
+          {children}
+        </code>
+      );
+    }
+
+    return (
+      <pre className={`chat-bubble__pre ${className ?? ''}`} {...props}>
+        <code>{children}</code>
+      </pre>
+    );
+  }
+};
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([initialAssistantMessage]);
@@ -46,10 +66,11 @@ export default function ChatPage() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) return;
+    const { SpeechRecognition, webkitSpeechRecognition } = window as WindowWithSpeechRecognition;
+    const RecognitionConstructor = SpeechRecognition ?? webkitSpeechRecognition;
+    if (!RecognitionConstructor) return;
     setVoiceSupported(true);
-    const recognition = new SpeechRecognition();
+    const recognition = new RecognitionConstructor();
     recognition.lang = 'fa-IR';
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
@@ -64,7 +85,7 @@ export default function ChatPage() {
     };
     recognition.onend = () => setIsRecording(false);
     recognition.onerror = () => setIsRecording(false);
-    recognitionRef.current = recognition as SpeechRecognitionInstance;
+    recognitionRef.current = recognition;
     return () => recognition.stop();
   }, []);
 
@@ -162,7 +183,13 @@ export default function ChatPage() {
                 <strong>{message.role === 'assistant' ? 'دستیار فنی' : 'شما'}</strong>
                 <span>{new Date(message.createdAt).toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })}</span>
               </div>
-              <p>{message.content}</p>
+              <ReactMarkdown
+                className="chat-bubble__content"
+                remarkPlugins={[remarkGfm]}
+                components={markdownComponents}
+              >
+                {message.content}
+              </ReactMarkdown>
             </div>
           ))}
           {isLoading && (

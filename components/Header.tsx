@@ -13,6 +13,7 @@ const navLinks = [
   { href: '/', label: 'صفحه اصلی' },
   { href: '/store', label: 'فروشگاه', hasMegaMenu: true },
   { href: '/assistant', label: 'دستیار هوشمند' },
+  { href: '/about', label: 'درباره ما' },
   { href: '/contact', label: 'تماس با ما' }
 ];
 
@@ -90,61 +91,61 @@ export default function Header() {
   const mobileDrawer =
     isMobile && portalElement
       ? createPortal(
-        <>
-          <aside
-            id="primary-mobile-drawer"
-            className={`mobile-drawer ${isDrawerOpen ? 'open' : ''}`}
-            aria-hidden={!isDrawerOpen}
-          >
-            <div className="mobile-drawer__header">
-              <span style={{ fontWeight: 700 }}>منو</span>
-              <button type="button" className="mobile-drawer__close" onClick={() => setIsDrawerOpen(false)}>
-                بستن
-              </button>
-            </div>
-            <nav className="mobile-drawer__nav">
-              {navLinks.map((link) => {
-                const isActive = link.hasMegaMenu
-                  ? pathname.startsWith('/store') || pathname.startsWith('/categories') || pathname.startsWith('/products')
-                  : pathname === link.href;
+          <>
+            <aside
+              id="primary-mobile-drawer"
+              className={`mobile-drawer ${isDrawerOpen ? 'open' : ''}`}
+              aria-hidden={!isDrawerOpen}
+            >
+              <div className="mobile-drawer__header">
+                <span style={{ fontWeight: 700 }}>منو</span>
+                <button type="button" className="mobile-drawer__close" onClick={() => setIsDrawerOpen(false)}>
+                  بستن
+                </button>
+              </div>
+              <nav className="mobile-drawer__nav">
+                {navLinks.map((link) => {
+                  const isActive = link.hasMegaMenu
+                    ? pathname.startsWith('/store') || pathname.startsWith('/categories') || pathname.startsWith('/products')
+                    : pathname === link.href;
 
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`nav-link ${isActive ? 'active' : ''}`}
-                    onClick={() => setIsDrawerOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                );
-              })}
-            </nav>
-            <div className="mobile-drawer__categories">
-              <h3>دسته‌بندی محصولات</h3>
-              {categoryGroups.map((group) => (
-                <div key={group.title} className="category-menu__group">
-                  <h3>{group.title}</h3>
-                  <div className="category-menu__links">
-                    {group.links.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className="category-menu__link"
-                        onClick={() => setIsDrawerOpen(false)}
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={`nav-link ${isActive ? 'active' : ''}`}
+                      onClick={() => setIsDrawerOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                })}
+              </nav>
+              <div className="mobile-drawer__categories">
+                <h3>دسته‌بندی محصولات</h3>
+                {categoryGroups.map((group) => (
+                  <div key={group.title} className="category-menu__group">
+                    <h3>{group.title}</h3>
+                    <div className="category-menu__links">
+                      {group.links.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className="category-menu__link"
+                          onClick={() => setIsDrawerOpen(false)}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </aside>
-          {isDrawerOpen && <div className="drawer-backdrop" onClick={() => setIsDrawerOpen(false)} />}
-        </>,
-        portalElement
-      )
+                ))}
+              </div>
+            </aside>
+            {isDrawerOpen && <div className="drawer-backdrop" onClick={() => setIsDrawerOpen(false)} />}
+          </>,
+          portalElement
+        )
       : null;
 
   return (

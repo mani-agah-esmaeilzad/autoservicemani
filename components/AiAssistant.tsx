@@ -6,6 +6,28 @@ import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { ChatMessage, ChatSession } from '@/lib/types';
 
+interface SpeechRecognitionEventLike {
+  results: ArrayLike<{ 0?: { transcript?: string } }>;
+}
+
+interface SpeechRecognitionInstance {
+  lang: string;
+  interimResults: boolean;
+  maxAlternatives: number;
+  start: () => void;
+  stop: () => void;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onend: (() => void) | null;
+  onerror: ((event: unknown) => void) | null;
+}
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance;
+
+interface WindowWithSpeechRecognition extends Window {
+  SpeechRecognition?: SpeechRecognitionConstructor;
+  webkitSpeechRecognition?: SpeechRecognitionConstructor;
+}
+
 interface AiAssistantProps {
   initialSessions: ChatSession[];
 }
@@ -54,7 +76,7 @@ export default function AiAssistant({ initialSessions }: AiAssistantProps) {
   const [voiceReplyEnabled, setVoiceReplyEnabled] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
   const [recordingSupported, setRecordingSupported] = useState(false);
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -63,15 +85,15 @@ export default function AiAssistant({ initialSessions }: AiAssistantProps) {
 
     setSpeechSupported('speechSynthesis' in window);
 
-    const SpeechRecognitionConstructor =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const { SpeechRecognition, webkitSpeechRecognition } = window as WindowWithSpeechRecognition;
+    const SpeechRecognitionConstructor = SpeechRecognition ?? webkitSpeechRecognition;
 
     if (SpeechRecognitionConstructor) {
       const recognition = new SpeechRecognitionConstructor();
       recognition.lang = 'fa-IR';
       recognition.interimResults = true;
       recognition.maxAlternatives = 1;
-      recognition.onresult = (event: any) => {
+      recognition.onresult = (event: SpeechRecognitionEventLike) => {
         const transcript = Array.from(event.results)
           .map((result) => result[0]?.transcript ?? '')
           .join(' ');
@@ -419,11 +441,4 @@ export default function AiAssistant({ initialSessions }: AiAssistantProps) {
       {error && <div className="ai-assistant__error">{error}</div>}
     </div>
   );
-}
-
-declare global {
-  interface Window {
-    webkitSpeechRecognition?: any;
-    SpeechRecognition?: any;
-  }
 }
