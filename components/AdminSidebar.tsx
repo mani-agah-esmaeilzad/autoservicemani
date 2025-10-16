@@ -5,6 +5,9 @@ const links = [
   { href: '/admin', label: 'داشبورد' },
   { href: '/admin/orders', label: 'مدیریت سفارش‌ها' },
   { href: '/admin/products', label: 'مدیریت محصولات' },
+  { href: '/admin/customers', label: 'مدیریت مشتریان' },
+  { href: '/admin/support', label: 'پشتیبانی و تیکت‌ها' },
+  { href: '/admin/ai', label: 'دستیار هوش مصنوعی' },
   { href: '/admin/reports', label: 'گزارش‌ها و تحلیل' },
   { href: '/admin/settings', label: 'تنظیمات سامانه' }
 ];

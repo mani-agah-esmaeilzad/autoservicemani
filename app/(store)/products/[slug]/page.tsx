@@ -1,6 +1,13 @@
 import { notFound } from 'next/navigation';
-import { findProductBySlug, listCategories, listReviews } from '@/lib/data';
 import type { Metadata } from 'next';
+import AddToCartButton from '@/components/AddToCartButton';
+import ProductQuestions from '@/components/ProductQuestions';
+import {
+  findProductBySlug,
+  listBrands,
+  listCategories,
+  listReviews
+} from '@/lib/data';
 
 interface ProductPageProps {
   params: { slug: string };
@@ -16,60 +23,177 @@ export function generateMetadata({ params }: ProductPageProps): Metadata {
 
 export default function ProductPage({ params }: ProductPageProps) {
   const product = findProductBySlug(params.slug);
-  const reviews = product ? listReviews(product.id) : [];
-  const category = product ? listCategories().find((cat) => cat.id === product.categoryId) : undefined;
 
   if (!product) {
     notFound();
   }
 
+  const reviews = listReviews(product.id);
+  const category = listCategories().find((cat) => cat.id === product.categoryId);
+  const brand = listBrands().find((item) => {
+    const brandName = item.name.toLowerCase();
+    const productBrand = product.brand.toLowerCase();
+    return brandName.includes(productBrand) || productBrand.includes(brandName);
+  });
+  const averageRating = reviews.length
+    ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
+    : product.rating;
+  const primaryImage = product.gallery[0] ?? { src: product.image, alt: product.name };
+
   return (
     <div className="section">
-      <div className="container" style={{ display: 'grid', gap: '2rem', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
-        <div className="card" style={{ background: '#f7f7f9', borderRadius: '24px' }}>
-          <img src={product.image} alt={product.name} style={{ maxHeight: '360px', objectFit: 'contain', width: '100%' }} />
-        </div>
-        <div className="card" style={{ display: 'grid', gap: '1rem' }}>
-          <div>
-            <span className="badge">{category?.name}</span>
-            <h1 style={{ margin: '0.75rem 0' }}>{product.name}</h1>
-            <p style={{ color: 'var(--color-muted)', lineHeight: 1.9 }}>{product.description}</p>
+      <div className="container product-page">
+        <div className="product-page__gallery">
+          <div className="product-page__gallery-main">
+            <img src={primaryImage.src} alt={primaryImage.alt ?? product.name} />
           </div>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <strong style={{ fontSize: '1.5rem' }}>{product.price.toLocaleString('fa-IR')} تومان</strong>
-            <span style={{ color: 'var(--color-primary)' }}>موجودی: {product.inStock} عدد</span>
-          </div>
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-            {product.tags.map((tag) => (
-              <span key={tag} className="badge" style={{ background: 'rgba(0,0,0,0.05)', color: 'var(--color-accent)' }}>
-                #{tag}
-              </span>
+          <div className="product-page__thumbnails">
+            {product.gallery.map((item, index) => (
+              <div key={`${item.src}-${index}`} className="product-page__thumbnail">
+                <img src={item.src} alt={item.alt} />
+              </div>
             ))}
+          </div>
+        </div>
+
+        <div className="product-page__summary">
+          <div className="product-page__breadcrumb">
+            <span className="badge">{category?.name ?? 'دسته‌بندی'}</span>
+            <span>{product.sku}</span>
+          </div>
+          <h1>{product.name}</h1>
+          <p className="product-page__description">{product.longDescription}</p>
+
+          <div className="product-page__meta">
+            <span>برند: {product.brand}</span>
+            <span>امتیاز کاربران: ⭐ {averageRating.toFixed(1)}</span>
+            <span>تعداد نظرات: {reviews.length}</span>
+          </div>
+
+          {brand && (
+            <div className="product-page__brand">
+              <img src={brand.logo} alt={`لوگوی ${brand.name}`} />
+              <div>
+                <strong>{brand.name}</strong>
+                <span>{brand.tagline}</span>
+                <small>
+                  تاسیس {brand.founded} • {brand.country}
+                </small>
+              </div>
+            </div>
+          )}
+
+          <div className="product-page__highlights">
+            <h3>ویژگی‌های شاخص</h3>
+            <ul>
+              {product.highlights.map((highlight) => (
+                <li key={highlight}>{highlight}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="product-page__purchase">
+            <div>
+              <strong className="product-page__price">{product.price.toLocaleString('fa-IR')} تومان</strong>
+              <span className={product.inStock > 0 ? 'text-success' : 'text-danger'}>
+                {product.inStock > 0 ? `موجودی انبار: ${product.inStock} عدد` : 'ناموجود'}
+              </span>
+            </div>
+            <AddToCartButton product={product} />
+          </div>
+
+          <div className="product-page__shipping">
+            <div>
+              <strong>شرایط ارسال</strong>
+              <p>{product.shipping}</p>
+            </div>
+            <div>
+              <strong>گارانتی اصالت</strong>
+              <p>{product.warranty}</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="container" style={{ marginTop: '2rem', display: 'grid', gap: '1.5rem' }}>
-        <div>
-          <h2>نظرات مشتریان</h2>
-          <p style={{ color: 'var(--color-muted)' }}>تجربه مشتریان واقعی از استفاده محصولات Auto Service Mani</p>
-        </div>
-        {reviews.length > 0 ? (
-          <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
-            {reviews.map((review) => (
-              <div key={review.id} className="card" style={{ border: '1px solid #eee', boxShadow: 'none' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                  <strong>{review.author}</strong>
-                  <span style={{ color: 'var(--color-primary)' }}>⭐ {review.rating}</span>
-                </div>
-                <p style={{ color: 'var(--color-muted)' }}>{review.comment}</p>
-                <span style={{ fontSize: '0.8rem', color: '#9b9da1' }}>{new Date(review.createdAt).toLocaleDateString('fa-IR')}</span>
-              </div>
+      <div className="container product-page__details">
+        <section className="card product-specs">
+          <h2>مشخصات فنی</h2>
+          <table>
+            <tbody>
+              {product.specifications.map((spec) => (
+                <tr key={spec.label}>
+                  <th>{spec.label}</th>
+                  <td>{spec.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+
+        <section className="card product-compatibility">
+          <h2>سازگاری و کاربرد</h2>
+          <ul>
+            {product.compatibility.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="card product-maintenance">
+          <h2>نکات نگهداری</h2>
+          <ul>
+            {product.maintenanceTips.map((tip) => (
+              <li key={tip}>{tip}</li>
+            ))}
+          </ul>
+        </section>
+      </div>
+
+      <div className="container product-page__sections">
+        <section className="card product-reviews">
+          <header>
+            <div>
+              <h2>نظرات مشتریان</h2>
+              <p>تجربه مشتریان واقعی از استفاده محصول</p>
+            </div>
+            <div className="product-reviews__summary">
+              <strong>⭐ {averageRating.toFixed(1)}</strong>
+              <span>{reviews.length} نظر ثبت شده</span>
+            </div>
+          </header>
+          {reviews.length > 0 ? (
+            <div className="product-reviews__list">
+              {reviews.map((review) => (
+                <article key={review.id} className="product-reviews__item">
+                  <div className="product-reviews__item-header">
+                    <strong>{review.author}</strong>
+                    <span>⭐ {review.rating}</span>
+                  </div>
+                  <p>{review.comment}</p>
+                  <small>{new Date(review.createdAt).toLocaleDateString('fa-IR')}</small>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <p className="product-reviews__empty">هنوز نظری برای این محصول ثبت نشده است.</p>
+          )}
+        </section>
+
+        <section className="card product-faqs">
+          <h2>سوالات متداول</h2>
+          <div className="product-faqs__items">
+            {product.faqs.map((faq, index) => (
+              <details key={`${faq.question}-${index}`} open={index === 0}>
+                <summary>{faq.question}</summary>
+                <p>{faq.answer}</p>
+              </details>
             ))}
           </div>
-        ) : (
-          <div className="card">هنوز نظری برای این محصول ثبت نشده است.</div>
-        )}
+        </section>
+
+        <section className="card product-questions-card">
+          <ProductQuestions productId={product.slug} initialQuestions={product.questions} />
+        </section>
       </div>
     </div>
   );

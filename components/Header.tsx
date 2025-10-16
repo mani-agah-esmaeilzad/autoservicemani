@@ -5,11 +5,13 @@ import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import NavMenu, { categoryGroups } from './NavMenu';
+import SearchBar from './SearchBar';
 import { useCart } from '@/contexts/CartContext';
 
 const navLinks = [
   { href: '/', label: 'صفحه اصلی' },
   { href: '/store', label: 'فروشگاه' },
+  { href: '/assistant', label: 'دستیار فنی' },
   { href: '/services', label: 'خدمات حضوری' },
   { href: '/about', label: 'درباره ما' },
   { href: '/contact', label: 'تماس با ما' }
@@ -160,7 +162,17 @@ export default function Header() {
           </nav>
         </div>
 
+        <div className="header-search">
+          <SearchBar
+            size={isMobile ? 'compact' : 'default'}
+            placeholder="نام محصول، برند یا خدمت را جستجو کنید..."
+          />
+        </div>
+
         <div className="header-actions">
+          <Link href="/account" className="account-link">
+            حساب من
+          </Link>
           <Link href="/cart" className="cart-link">
             سبد خرید
             {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}

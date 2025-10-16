@@ -9,7 +9,12 @@ export default function AdminSettingsPage() {
     supportEmail: 'support@autoservicemani.ir',
     phone: '021-88990011',
     address: 'تهران، اتوبان ستاری، خیابان خودرو، پلاک 18',
-    allowReservations: true
+    allowReservations: true,
+    enableAiAssistant: true,
+    enableVoiceReplies: true,
+    knowledgeBaseUrl: 'https://autoservicemani.ir/knowledge-base',
+    aiEscalationThreshold: 70,
+    googleKeyConfigured: false
   });
 
   return (
@@ -66,6 +71,64 @@ export default function AdminSettingsPage() {
           ذخیره تغییرات
         </button>
       </form>
+
+      <section className="card" style={{ display: 'grid', gap: '1rem' }}>
+        <header>
+          <h2>پیکربندی دستیار هوش مصنوعی</h2>
+          <p style={{ color: 'var(--color-muted)', margin: 0 }}>
+            اتصال به Google AI و نحوه پاسخ‌گویی صوتی را از این قسمت مدیریت کنید.
+          </p>
+        </header>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <input
+            type="checkbox"
+            checked={form.googleKeyConfigured}
+            onChange={(event) => setForm((prev) => ({ ...prev, googleKeyConfigured: event.target.checked }))}
+          />
+          کلید GOOGLE_AI_API_KEY روی سرور تنظیم شده است
+        </label>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <input
+            type="checkbox"
+            checked={form.enableAiAssistant}
+            onChange={(event) => setForm((prev) => ({ ...prev, enableAiAssistant: event.target.checked }))}
+          />
+          فعال‌سازی دستیار خودکار در وب‌سایت
+        </label>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <input
+            type="checkbox"
+            checked={form.enableVoiceReplies}
+            onChange={(event) => setForm((prev) => ({ ...prev, enableVoiceReplies: event.target.checked }))}
+          />
+          پخش پاسخ صوتی برای کاربران
+        </label>
+        <label style={labelStyle}>
+          منبع دانش‌نامه داخلی
+          <input
+            value={form.knowledgeBaseUrl}
+            onChange={(event) => setForm((prev) => ({ ...prev, knowledgeBaseUrl: event.target.value }))}
+            style={inputStyle}
+            placeholder="https://"
+          />
+        </label>
+        <label style={labelStyle}>
+          آستانه ارجاع به پشتیبانی (درصد رضایت)
+          <input
+            type="number"
+            min={40}
+            max={100}
+            value={form.aiEscalationThreshold}
+            onChange={(event) =>
+              setForm((prev) => ({ ...prev, aiEscalationThreshold: Number(event.target.value) }))
+            }
+            style={inputStyle}
+          />
+        </label>
+        <button type="button" className="btn btn-ghost">
+          ذخیره تنظیمات هوش مصنوعی
+        </button>
+      </section>
     </div>
   );
 }
