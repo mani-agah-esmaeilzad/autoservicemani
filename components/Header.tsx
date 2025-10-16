@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import NavMenu, { categoryGroups } from './NavMenu';
@@ -21,6 +22,7 @@ export default function Header() {
   } = useCart();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [portalElement, setPortalElement] = useState<HTMLElement | null>(null);
 
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
 
@@ -33,6 +35,14 @@ export default function Header() {
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    setPortalElement(document.body);
   }, []);
 
   useEffect(() => {
@@ -56,6 +66,60 @@ export default function Header() {
   }, [isDrawerOpen, isMobile]);
 
   const toggleAriaLabel = isDrawerOpen ? 'بستن منو' : 'باز کردن منو';
+
+  const mobileDrawer =
+    isMobile && portalElement
+      ? createPortal(
+          <>
+            <aside
+              id="primary-mobile-drawer"
+              className={`mobile-drawer ${isDrawerOpen ? 'open' : ''}`}
+              aria-hidden={!isDrawerOpen}
+            >
+              <div className="mobile-drawer__header">
+                <span style={{ fontWeight: 700 }}>منو</span>
+                <button type="button" className="mobile-drawer__close" onClick={() => setIsDrawerOpen(false)}>
+                  بستن
+                </button>
+              </div>
+              <nav className="mobile-drawer__nav">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`nav-link ${pathname === link.href ? 'active' : ''}`}
+                    onClick={() => setIsDrawerOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+              <div className="mobile-drawer__categories">
+                <h3>دسته‌بندی محصولات</h3>
+                {categoryGroups.map((group) => (
+                  <div key={group.title} className="category-menu__group">
+                    <h3>{group.title}</h3>
+                    <div className="category-menu__links">
+                      {group.links.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className="category-menu__link"
+                          onClick={() => setIsDrawerOpen(false)}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </aside>
+            {isDrawerOpen && <div className="drawer-backdrop" onClick={() => setIsDrawerOpen(false)} />}
+          </>,
+          portalElement
+        )
+      : null;
 
   return (
     <header className="layout-header">
@@ -103,56 +167,7 @@ export default function Header() {
           </Link>
         </div>
       </div>
-
-      {isMobile && (
-        <>
-          <aside
-            id="primary-mobile-drawer"
-            className={`mobile-drawer ${isDrawerOpen ? 'open' : ''}`}
-            aria-hidden={!isDrawerOpen}
-          >
-            <div className="mobile-drawer__header">
-              <span style={{ fontWeight: 700 }}>منو</span>
-              <button type="button" className="mobile-drawer__close" onClick={() => setIsDrawerOpen(false)}>
-                بستن
-              </button>
-            </div>
-            <nav className="mobile-drawer__nav">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`nav-link ${pathname === link.href ? 'active' : ''}`}
-                  onClick={() => setIsDrawerOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-            <div className="mobile-drawer__categories">
-              <h3>دسته‌بندی محصولات</h3>
-              {categoryGroups.map((group) => (
-                <div key={group.title} className="category-menu__group">
-                  <h3>{group.title}</h3>
-                  <div className="category-menu__links">
-                    {group.links.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className="category-menu__link"
-                        onClick={() => setIsDrawerOpen(false)}
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </aside>
-          {isDrawerOpen && <div className="drawer-backdrop" onClick={() => setIsDrawerOpen(false)} />}
-        </>
-      )}
+      {mobileDrawer}
     </header>
   );
 }
