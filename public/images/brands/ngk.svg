@@ -1,0 +1,6 @@
+<svg width="144" height="64" viewBox="0 0 144 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="2" y="2" width="140" height="60" rx="16" fill="#FFF1F1" stroke="#E53935" stroke-width="4" />
+  <circle cx="56" cy="32" r="18" fill="#E53935" />
+  <path d="M56 20L62 32H50L56 20Z" fill="#FCD34D" />
+  <text x="96" y="38" text-anchor="middle" fill="#B71C1C" font-family="Vazirmatn, sans-serif" font-size="18" font-weight="800">NGK</text>
+</svg>
