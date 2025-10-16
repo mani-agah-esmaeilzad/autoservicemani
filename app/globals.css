@@ -159,7 +159,7 @@ main {
 .header-inner {
   display: flex;
   align-items: center;
-  gap: 1.75rem;
+  gap: 1.5rem;
   padding: 1.2rem 0;
 }
 
@@ -169,6 +169,7 @@ main {
   gap: 0.9rem;
   font-weight: 700;
   color: var(--color-text);
+  flex-shrink: 0;
 }
 
 .brand-badge {
@@ -203,14 +204,21 @@ main {
 .header-desktop {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  flex: 1;
+  gap: 1.35rem;
+  flex: 1 1 520px;
+  min-width: 440px;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 1.1rem;
+  gap: 0.95rem;
+}
+
+.header-desktop .nav-links {
+  flex: 1 1 320px;
+  min-width: 320px;
+  justify-content: flex-start;
 }
 
 .nav-link {
@@ -219,6 +227,7 @@ main {
   font-weight: 500;
   color: var(--color-muted);
   transition: var(--transition-base);
+  white-space: nowrap;
 }
 
 .nav-link:hover,
@@ -230,7 +239,12 @@ main {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.header-actions a {
+  white-space: nowrap;
 }
 
 .cart-link {
@@ -380,6 +394,7 @@ main {
 
 .category-menu-wrapper {
   position: relative;
+  flex-shrink: 0;
 }
 
 .category-trigger {
@@ -393,6 +408,7 @@ main {
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition-base);
+  white-space: nowrap;
 }
 
 .category-trigger:hover,
@@ -648,6 +664,49 @@ main {
   font-size: 0.92rem;
 }
 
+@media (max-width: 1320px) {
+  .header-inner {
+    flex-wrap: wrap;
+    row-gap: 0.85rem;
+  }
+
+  .mobile-toggle {
+    order: 0;
+  }
+
+  .brand {
+    order: 1;
+  }
+
+  .header-actions {
+    order: 2;
+    margin-inline-start: auto;
+  }
+
+  .header-desktop {
+    order: 3;
+    width: 100%;
+    flex: 1 1 100%;
+    min-width: 0;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.85rem 1.35rem;
+  }
+
+  .header-desktop .nav-links {
+    flex: 1 1 100%;
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+
+  .header-search {
+    order: 4;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+}
+
 @media (max-width: 1024px) {
   .header-desktop {
     display: none;
@@ -825,9 +884,10 @@ main {
 }
 
 .header-search {
-  flex: 1;
+  flex: 0 1 360px;
   display: flex;
   max-width: 420px;
+  min-width: 260px;
 }
 
 .header-search .search-bar {
@@ -838,6 +898,7 @@ main {
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-shrink: 0;
 }
 
 .account-link {
@@ -1949,6 +2010,7 @@ main {
     order: 3;
     width: 100%;
     max-width: none;
+    min-width: 0;
   }
 
   .header-actions {
