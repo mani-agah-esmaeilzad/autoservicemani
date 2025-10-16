@@ -1,0 +1,10 @@
+<svg width="480" height="360" viewBox="0 0 480 360" xmlns="http://www.w3.org/2000/svg">
+  <rect width="480" height="360" fill="#f4f5f7" rx="36" />
+  <g transform="translate(140,70)">
+    <rect width="200" height="220" rx="28" fill="#ffffff" stroke="#00a65a" stroke-width="4" />
+    <rect x="32" y="40" width="136" height="32" rx="16" fill="#00a65a" />
+    <text x="100" y="60" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#fff">MANN FILTER</text>
+    <text x="100" y="120" text-anchor="middle" font-family="sans-serif" font-size="18" fill="#111">W67</text>
+    <text x="100" y="158" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#666">Oil Filter</text>
+  </g>
+</svg>
