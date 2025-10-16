@@ -28,11 +28,9 @@ interface SpeechRecognitionInstance {
 
 type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance;
 
-declare global {
-  interface Window {
-    SpeechRecognition?: SpeechRecognitionConstructor;
-    webkitSpeechRecognition?: SpeechRecognitionConstructor;
-  }
+interface WindowWithSpeechRecognition extends Window {
+  SpeechRecognition?: SpeechRecognitionConstructor;
+  webkitSpeechRecognition?: SpeechRecognitionConstructor;
 }
 
 export default function ChatPage() {
@@ -46,10 +44,11 @@ export default function ChatPage() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) return;
+    const { SpeechRecognition, webkitSpeechRecognition } = window as WindowWithSpeechRecognition;
+    const RecognitionConstructor = SpeechRecognition ?? webkitSpeechRecognition;
+    if (!RecognitionConstructor) return;
     setVoiceSupported(true);
-    const recognition = new SpeechRecognition();
+    const recognition = new RecognitionConstructor();
     recognition.lang = 'fa-IR';
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
@@ -64,7 +63,7 @@ export default function ChatPage() {
     };
     recognition.onend = () => setIsRecording(false);
     recognition.onerror = () => setIsRecording(false);
-    recognitionRef.current = recognition as SpeechRecognitionInstance;
+    recognitionRef.current = recognition;
     return () => recognition.stop();
   }, []);
 
