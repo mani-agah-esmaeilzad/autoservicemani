@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, type FocusEvent, type MouseEvent as ReactMouseEvent } from 'react';
 import Link from 'next/link';
 
 export const categoryGroups = [
@@ -30,37 +30,44 @@ export const categoryGroups = [
   }
 ];
 
-export default function NavMenu() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+type NavMenuProps = {
+  isActive?: boolean;
+  label?: string;
+};
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+export default function NavMenu({ isActive = false, label = 'فروشگاه' }: NavMenuProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
       return;
     }
 
-    const updateViewport = () => setIsMobile(window.innerWidth <= 768);
-    updateViewport();
-    window.addEventListener('resize', updateViewport);
-    return () => window.removeEventListener('resize', updateViewport);
+    const updatePointerMode = () => {
+      setIsTouchDevice(window.matchMedia('(pointer: coarse)').matches);
+    };
+
+    updatePointerMode();
+    window.addEventListener('resize', updatePointerMode);
+    return () => window.removeEventListener('resize', updatePointerMode);
   }, []);
 
   useEffect(() => {
-    if (!isMounted || typeof document === 'undefined') {
+    if (typeof document === 'undefined') {
       return;
     }
 
-    const shouldLock = isOpen && isMobile;
-    document.body.classList.toggle('no-scroll', shouldLock);
-    return () => {
-      document.body.classList.remove('no-scroll');
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!wrapperRef.current?.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
     };
-  }, [isOpen, isMobile, isMounted]);
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -77,45 +84,70 @@ export default function NavMenu() {
     return () => window.removeEventListener('keydown', handleEsc);
   }, []);
 
+  const handleBlur = (event: FocusEvent<HTMLDivElement>) => {
+    if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+      setIsOpen(false);
+    }
+  };
+
+  const handleTriggerClick = (event: ReactMouseEvent<HTMLAnchorElement>) => {
+    if (isTouchDevice && !isOpen) {
+      event.preventDefault();
+      setIsOpen(true);
+      return;
+    }
+
+    setIsOpen(false);
+  };
+
   return (
-    <div className="category-menu-wrapper">
-      <button
-        type="button"
-        className="category-trigger"
+    <div
+      ref={wrapperRef}
+      className={`category-menu-wrapper ${isOpen ? 'is-open' : ''}`}
+      onMouseEnter={() => {
+        if (!isTouchDevice) {
+          setIsOpen(true);
+        }
+      }}
+      onMouseLeave={() => {
+        if (!isTouchDevice) {
+          setIsOpen(false);
+        }
+      }}
+      onFocusCapture={() => setIsOpen(true)}
+      onBlurCapture={handleBlur}
+    >
+      <Link
+        href="/store"
+        className={`nav-link category-trigger-link ${isActive ? 'active' : ''}`}
+        aria-haspopup="true"
         aria-expanded={isOpen}
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={handleTriggerClick}
+        onFocus={() => setIsOpen(true)}
       >
-        دسته‌بندی محصولات
-      </button>
+        {label}
+      </Link>
 
-      {isMounted && (
-        <div className={`category-menu ${isOpen ? 'open' : ''}`}>
-          <div className="category-menu__close">
-            <button type="button" onClick={() => setIsOpen(false)}>
-              بستن
-            </button>
-          </div>
-          {categoryGroups.map((group) => (
-            <div key={group.title} className="category-menu__group">
-              <h3>{group.title}</h3>
-              <div className="category-menu__links">
-                {group.links.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="category-menu__link"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
+      <div className={`category-menu ${isOpen ? 'open' : ''}`} role="menu">
+        {categoryGroups.map((group) => (
+          <div key={group.title} className="category-menu__group">
+            <h3>{group.title}</h3>
+            <div className="category-menu__links">
+              {group.links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="category-menu__link"
+                  role="menuitem"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
-          ))}
-        </div>
-      )}
-
-      {isOpen && isMobile && <div className="drawer-backdrop" onClick={() => setIsOpen(false)} />}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

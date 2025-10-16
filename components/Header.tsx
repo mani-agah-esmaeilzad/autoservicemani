@@ -11,7 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 
 const navLinks = [
   { href: '/', label: 'صفحه اصلی' },
-  { href: '/store', label: 'فروشگاه' },
+  { href: '/store', label: 'فروشگاه', hasMegaMenu: true },
   { href: '/assistant', label: 'دستیار هوشمند' },
   { href: '/about', label: 'درباره ما' },
   { href: '/contact', label: 'تماس با ما' }
@@ -104,16 +104,22 @@ export default function Header() {
                 </button>
               </div>
               <nav className="mobile-drawer__nav">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`nav-link ${pathname === link.href ? 'active' : ''}`}
-                    onClick={() => setIsDrawerOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                {navLinks.map((link) => {
+                  const isActive = link.hasMegaMenu
+                    ? pathname.startsWith('/store') || pathname.startsWith('/categories') || pathname.startsWith('/products')
+                    : pathname === link.href;
+
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={`nav-link ${isActive ? 'active' : ''}`}
+                      onClick={() => setIsDrawerOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                })}
               </nav>
               <div className="mobile-drawer__categories">
                 <h3>دسته‌بندی محصولات</h3>
@@ -167,17 +173,28 @@ export default function Header() {
         </Link>
 
         <div className="header-desktop">
-          <NavMenu />
           <nav className="nav-links">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`nav-link ${pathname === link.href ? 'active' : ''}`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              if (link.hasMegaMenu) {
+                const isStoreActive =
+                  pathname === link.href ||
+                  pathname.startsWith('/store') ||
+                  pathname.startsWith('/categories') ||
+                  pathname.startsWith('/products');
+
+                return <NavMenu key={link.href} label={link.label} isActive={isStoreActive} />;
+              }
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`nav-link ${pathname === link.href ? 'active' : ''}`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
         </div>
 
