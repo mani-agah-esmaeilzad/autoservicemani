@@ -12,6 +12,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'اطلاعات محصول ناقص است' }, { status: 400 });
   }
 
+  const fallbackImage = payload.image ?? '/images/products/placeholder.svg';
+
   const product: Product = {
     id: payload.id ?? `prd-${Date.now()}`,
     slug: payload.slug ?? payload.name.toLowerCase().replace(/\s+/g, '-'),
@@ -19,11 +21,25 @@ export async function POST(request: Request) {
     description: payload.description ?? '',
     price: Number(payload.price),
     brand: payload.brand,
-    image: payload.image ?? '/images/products/placeholder.svg',
+    image: fallbackImage,
     categoryId: payload.categoryId,
     rating: payload.rating ?? 5,
     inStock: Number(payload.inStock ?? 0),
-    tags: payload.tags ?? []
+    tags: payload.tags ?? [],
+    sku: payload.sku ?? `SKU-${Date.now()}`,
+    longDescription: payload.longDescription ?? payload.description ?? '',
+    highlights: payload.highlights ?? [],
+    gallery:
+      payload.gallery?.length
+        ? payload.gallery
+        : [{ src: fallbackImage, alt: payload.name }],
+    specifications: payload.specifications ?? [],
+    compatibility: payload.compatibility ?? [],
+    warranty: payload.warranty ?? '',
+    shipping: payload.shipping ?? '',
+    maintenanceTips: payload.maintenanceTips ?? [],
+    faqs: payload.faqs ?? [],
+    questions: payload.questions ?? []
   };
 
   upsertProduct(product);
