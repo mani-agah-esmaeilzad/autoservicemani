@@ -1,11 +1,15 @@
 import type { Metadata } from 'next';
-import { Work_Sans } from 'next/font/google';
+import { Vazirmatn } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-const workSans = Work_Sans({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700'] });
+const vazir = Vazirmatn({
+  subsets: ['arabic', 'latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  display: 'swap'
+});
 
 export const metadata: Metadata = {
   title: 'Auto Service Mani | فروشگاه آنلاین لوازم و خدمات خودرو',
@@ -26,7 +30,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fa" dir="rtl">
-      <body className={`${workSans.className} bg-surface text-body`}> 
+      <body className={`${vazir.className} body-root`}>
         <Providers>
           <Header />
           <main>{children}</main>

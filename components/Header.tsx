@@ -1,8 +1,9 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import NavMenu from './NavMenu';
+import NavMenu, { categoryGroups } from './NavMenu';
 import { useCart } from '@/contexts/CartContext';
 
 const navLinks = [
@@ -18,79 +19,103 @@ export default function Header() {
   const {
     state: { items }
   } = useCart();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
 
+  useEffect(() => {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    document.body.classList.toggle('no-scroll', isDrawerOpen);
+    return () => document.body.classList.remove('no-scroll');
+  }, [isDrawerOpen]);
+
   return (
-    <header
-      style={{
-        background: '#ffffff',
-        borderBottom: '1px solid #ececf1',
-        position: 'sticky',
-        top: 0,
-        zIndex: 40
-      }}
-    >
-      <div className="container" style={{ display: 'flex', alignItems: 'center', gap: '2rem', padding: '1rem 0' }}>
-        <Link href="/">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <span
-              style={{
-                background: 'linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))',
-                color: '#fff',
-                width: '48px',
-                height: '48px',
-                borderRadius: '14px',
-                display: 'grid',
-                placeItems: 'center',
-                fontWeight: 700,
-                letterSpacing: '1px'
-              }}
-            >
-              ASM
-            </span>
-            <div>
-              <strong style={{ fontSize: '1.1rem' }}>Auto Service Mani</strong>
-              <div style={{ fontSize: '0.85rem', color: 'var(--color-muted)' }}>اتو سرویس مانی</div>
-            </div>
-          </div>
+    <header className="layout-header">
+      <div className="container header-inner">
+        <button
+          type="button"
+          className="mobile-toggle"
+          aria-label="باز کردن منو"
+          onClick={() => setIsDrawerOpen(true)}
+        >
+          <span />
+        </button>
+
+        <Link href="/" className="brand">
+          <span className="brand-badge">ASM</span>
+          <span className="brand-text">
+            <strong>اتو سرویس مانی</strong>
+            <small>Auto Service Mani</small>
+          </span>
         </Link>
 
-        <NavMenu />
+        <div className="header-desktop">
+          <NavMenu />
+          <nav className="nav-links">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`nav-link ${pathname === link.href ? 'active' : ''}`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
 
-        <nav style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+        <div className="header-actions">
+          <Link href="/cart" className="cart-link">
+            سبد خرید
+            {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
+          </Link>
+        </div>
+      </div>
+
+      <aside className={`mobile-drawer ${isDrawerOpen ? 'open' : ''}`} aria-hidden={!isDrawerOpen}>
+        <div className="mobile-drawer__header">
+          <span style={{ fontWeight: 700 }}>منو</span>
+          <button type="button" className="mobile-drawer__close" onClick={() => setIsDrawerOpen(false)}>
+            بستن
+          </button>
+        </div>
+        <nav className="mobile-drawer__nav">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className={pathname === link.href ? 'text-primary' : ''}
-              style={{ fontWeight: pathname === link.href ? 700 : 500 }}
+              className={`nav-link ${pathname === link.href ? 'active' : ''}`}
+              onClick={() => setIsDrawerOpen(false)}
             >
               {link.label}
             </Link>
           ))}
         </nav>
-
-        <Link href="/cart" style={{ position: 'relative', fontWeight: 600 }}>
-          سبد خرید
-          {totalItems > 0 && (
-            <span
-              style={{
-                position: 'absolute',
-                top: '-0.55rem',
-                left: '-0.85rem',
-                background: 'var(--color-primary)',
-                color: '#fff',
-                borderRadius: '999px',
-                padding: '0.1rem 0.45rem',
-                fontSize: '0.75rem'
-              }}
-            >
-              {totalItems}
-            </span>
-          )}
-        </Link>
-      </div>
+        <div className="mobile-drawer__categories">
+          <h3>دسته‌بندی محصولات</h3>
+          {categoryGroups.map((group) => (
+            <div key={group.title} className="category-menu__group">
+              <h3>{group.title}</h3>
+              <div className="category-menu__links">
+                {group.links.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="category-menu__link"
+                    onClick={() => setIsDrawerOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </aside>
+      {isDrawerOpen && <div className="drawer-backdrop" onClick={() => setIsDrawerOpen(false)} />}
     </header>
   );
 }

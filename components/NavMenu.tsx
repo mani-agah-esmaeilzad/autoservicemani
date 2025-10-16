@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-const categories = [
+export const categoryGroups = [
   {
     title: 'روغن‌ها و مایعات',
     links: [
@@ -32,46 +32,78 @@ const categories = [
 
 export default function NavMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const updateViewport = () => setIsMobile(window.innerWidth <= 768);
+    updateViewport();
+    window.addEventListener('resize', updateViewport);
+    return () => window.removeEventListener('resize', updateViewport);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted || typeof document === 'undefined') {
+      return;
+    }
+
+    const shouldLock = isOpen && isMobile;
+    document.body.classList.toggle('no-scroll', shouldLock);
+    return () => {
+      document.body.classList.remove('no-scroll');
+    };
+  }, [isOpen, isMobile, isMounted]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, []);
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div className="category-menu-wrapper">
       <button
         type="button"
-        className="btn btn-primary"
-        style={{ padding: '0.6rem 1.2rem', fontSize: '0.95rem' }}
+        className="category-trigger"
+        aria-expanded={isOpen}
         onClick={() => setIsOpen((prev) => !prev)}
       >
         دسته‌بندی محصولات
       </button>
 
-      {isOpen && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 'calc(100% + 12px)',
-            right: 0,
-            background: '#fff',
-            borderRadius: '20px',
-            padding: '1.25rem',
-            boxShadow: '0 25px 50px rgba(0,0,0,0.12)',
-            minWidth: '540px',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-            gap: '1.5rem',
-            zIndex: 50
-          }}
-        >
-          {categories.map((column) => (
-            <div key={column.title}>
-              <div style={{ fontWeight: 700, marginBottom: '0.85rem', color: 'var(--color-accent)' }}>
-                {column.title}
-              </div>
-              <div style={{ display: 'grid', gap: '0.65rem' }}>
-                {column.links.map((link) => (
+      {isMounted && (
+        <div className={`category-menu ${isOpen ? 'open' : ''}`}>
+          <div className="category-menu__close">
+            <button type="button" onClick={() => setIsOpen(false)}>
+              بستن
+            </button>
+          </div>
+          {categoryGroups.map((group) => (
+            <div key={group.title} className="category-menu__group">
+              <h3>{group.title}</h3>
+              <div className="category-menu__links">
+                {group.links.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    style={{ color: 'var(--color-muted)', fontWeight: 500 }}
+                    className="category-menu__link"
                     onClick={() => setIsOpen(false)}
                   >
                     {link.label}
@@ -82,6 +114,8 @@ export default function NavMenu() {
           ))}
         </div>
       )}
+
+      {isOpen && isMobile && <div className="drawer-backdrop" onClick={() => setIsOpen(false)} />}
     </div>
   );
 }

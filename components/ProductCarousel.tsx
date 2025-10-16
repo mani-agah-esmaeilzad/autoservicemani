@@ -28,32 +28,25 @@ export default function ProductCarousel({ products, title, description }: Props)
 
   return (
     <section className="section" style={{ paddingTop: '0' }}>
-      <div className="container" style={{ display: 'grid', gap: '1.5rem' }}>
-        <div>
-          <h2 style={{ marginBottom: '0.35rem' }}>{title}</h2>
+      <div className="container" style={{ display: 'grid', gap: '1.75rem' }}>
+        <div className="carousel-header">
+          <h2 style={{ margin: 0 }}>{title}</h2>
           {description && <p style={{ color: 'var(--color-muted)', margin: 0 }}>{description}</p>}
         </div>
-        <div style={{ display: 'grid', gap: '1rem' }}>
-          <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}>
+        <div style={{ display: 'grid', gap: '1.25rem' }}>
+          <div className="carousel-grid">
             {chunks[index]?.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
           {chunks.length > 1 && (
-            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+            <div className="carousel-dots">
               {chunks.map((_, chunkIndex) => (
                 <button
                   key={chunkIndex}
                   type="button"
                   onClick={() => setIndex(chunkIndex)}
-                  style={{
-                    width: '14px',
-                    height: '14px',
-                    borderRadius: '999px',
-                    border: 'none',
-                    background: index === chunkIndex ? 'var(--color-primary)' : '#e5e6eb',
-                    cursor: 'pointer'
-                  }}
+                  className={`carousel-dot ${index === chunkIndex ? 'active' : ''}`}
                   aria-label={`مشاهده اسلاید ${chunkIndex + 1}`}
                 />
               ))}
