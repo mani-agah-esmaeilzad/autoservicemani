@@ -1,6 +1,56 @@
 import { NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { appendAiMessage, getAiSession, updateAiSession } from '@/lib/data';
 import type { ChatMessage } from '@/lib/types';
+
+const MODEL_NAME = 'gemini-2.0-flash';
+
+function buildGenerativeHistory(messages: ChatMessage[]) {
+  return messages.map((message) => ({
+    role: message.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: message.content }]
+  }));
+}
+
+async function requestAssistantReply(messages: ChatMessage[]) {
+  const apiKey = process.env.ASM_ASSISTANT_API_KEY;
+
+  if (!apiKey) {
+    return {
+      reply:
+        'برای دریافت پاسخ‌های زنده از دستیار هوشمند اتو سرویس مانی لازم است متغیر ASM_ASSISTANT_API_KEY در محیط سرور تنظیم شود. در حالت نمایشی فعلی، این پاسخ به صورت داخلی تولید شده است: برای انتخاب روغن مناسب، دفترچه خودرو، شرایط آب و هوا و نحوه عملکرد موتور را در نظر بگیرید و از ویسکوزیته پیشنهادی سازنده خارج نشوید.',
+      fallback: true
+    } as const;
+  }
+
+  try {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({
+      model: MODEL_NAME,
+      systemInstruction:
+        'شما دستیار هوشمند اتو سرویس مانی هستید. همیشه به فارسی پاسخ دهید، روی راهکارهای فنی خودرو تمرکز کنید، و در صورت نیاز مشتری را به سرویس‌های حضوری یا کارشناسان انسانی ارجاع دهید. از ارائه مشاوره‌های خطرناک خودداری کنید و اگر اطلاعات کافی در اختیار ندارید صادقانه اعلام نمایید.'
+    });
+
+    const result = await model.generateContent({
+      contents: buildGenerativeHistory(messages)
+    });
+
+    const text = result.response?.text()?.trim();
+
+    if (!text) {
+      return { reply: '', fallback: false } as const;
+    }
+
+    return { reply: text, fallback: false } as const;
+  } catch (error) {
+    console.error('Intelligent assistant request failed', error);
+    return {
+      reply:
+        'در حال حاضر اتصال به دستیار هوشمند اتو سرویس مانی با مشکل مواجه شده است. لطفاً بعداً مجدداً تلاش کنید یا از طریق پشتیبانی انسانی سوال خود را مطرح نمایید.',
+      fallback: true
+    } as const;
+  }
+}
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -33,43 +83,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'FAILED_TO_APPEND_MESSAGE' }, { status: 500 });
   }
 
-  let assistantReply = '';
-  const apiKey = process.env.ASM_ASSISTANT_API_KEY;
-  const endpoint = process.env.ASM_ASSISTANT_API_ENDPOINT;
-
-  if (!apiKey || !endpoint) {
-    assistantReply =
-      'برای دریافت پاسخ‌های زنده از دستیار هوشمند لازم است متغیرهای ASM_ASSISTANT_API_KEY و ASM_ASSISTANT_API_ENDPOINT تنظیم شوند. در حالت نمایشی فعلی، این پاسخ به صورت داخلی تولید شده است: برای انتخاب روغن مناسب، دفترچه خودرو، شرایط آب و هوا و نحوه کارکرد موتور را در نظر بگیرید و از ویسکوزیته پیشنهادی سازنده خارج نشوید.';
-  } else {
-    try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          sessionId,
-          messages: sessionWithUser.messages.map((message) => ({
-            role: message.role,
-            content: message.content
-          }))
-        })
-      });
-
-      if (!response.ok) {
-        const payload = await response.json().catch(() => ({}));
-        throw new Error(payload?.error ?? 'assistant_response_error');
-      }
-
-      const payload = (await response.json()) as { reply?: string };
-      assistantReply = payload?.reply?.trim() ?? '';
-    } catch (error) {
-      console.error('Intelligent assistant request failed', error);
-      assistantReply =
-        'در حال حاضر اتصال به دستیار هوشمند Auto Service Mani با مشکل مواجه شده است. لطفاً بعداً مجدداً تلاش کنید یا از طریق پشتیبانی انسانی سوال خود را مطرح نمایید.';
-    }
-  }
+  const { reply } = await requestAssistantReply(sessionWithUser.messages);
+  let assistantReply = reply;
 
   if (!assistantReply) {
     assistantReply =

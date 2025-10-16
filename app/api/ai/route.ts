@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import { listBrands, listProducts, listServices } from '@/lib/data';
 
 interface AiRequestBody {
@@ -64,29 +65,34 @@ export async function POST(request: NextRequest) {
   }
 
   const apiKey = process.env.ASM_ASSISTANT_API_KEY;
-  const endpoint = process.env.ASM_ASSISTANT_API_ENDPOINT;
-  if (apiKey && endpoint) {
+
+  if (apiKey) {
     try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          message,
-          history: body.history ?? []
-        })
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({
+        model: 'gemini-2.0-flash',
+        systemInstruction:
+          'شما دستیار هوشمند اتو سرویس مانی هستید. همیشه به فارسی پاسخ دهید و توصیه‌های ایمن و قابل اجرا برای سرویس و نگهداری خودرو ارائه کنید. در صورت نیاز مشتری را به کارشناسان انسانی ارجاع دهید.'
       });
 
-      if (response.ok) {
-        const payload = (await response.json()) as { reply?: string };
-        if (payload?.reply) {
-          return NextResponse.json({ reply: payload.reply });
+      const historyEntries = (body.history ?? []).map((entry) => ({
+        role: entry.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: entry.content }]
+      }));
+
+      const contents = [
+        ...historyEntries,
+        {
+          role: 'user' as const,
+          parts: [{ text: message }]
         }
-      } else {
-        const payload = await response.json().catch(() => ({}));
-        console.error('Intelligent assistant bridge error:', payload);
+      ];
+
+      const result = await model.generateContent({ contents });
+      const text = result.response?.text()?.trim();
+
+      if (text) {
+        return NextResponse.json({ reply: text });
       }
     } catch (error) {
       console.error('Intelligent assistant request failed:', error);
