@@ -1,6 +1,8 @@
-import { getUserDashboard, listOrders } from '@/lib/data';
+
 
 export default async function AdminCustomersPage() {
+  const { getUserDashboard, listOrders } = await import("@/lib/data");
+
   const [dashboard, orders] = await Promise.all([getUserDashboard(), listOrders()]);
 
   return (
