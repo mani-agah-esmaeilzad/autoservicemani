@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { listServices } from '@/lib/data';
+// import { listServices } from '@/lib/data';
 
 export const metadata: Metadata = {
   title: 'خدمات حضوری | اتو سرویس مانی',
@@ -7,6 +7,8 @@ export const metadata: Metadata = {
 };
 
 export default async function ServicesPage() {
+   const { listServices } = await import("@/lib/data");
+
   const services = await listServices();
 
   return (
