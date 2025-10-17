@@ -1,22 +1,34 @@
-import { NextResponse } from 'next/server';
-import { createAiSession, listAiSessions } from '@/lib/data';
+import { NextResponse } from "next/server";
 
 export async function GET() {
-  const sessions = await listAiSessions();
-  return NextResponse.json({ sessions });
+  try {
+    const { listAiSessions } = await import("@/lib/data");
+    const sessions = await listAiSessions();
+    return NextResponse.json({ sessions });
+  } catch (error) {
+    console.error("Error in GET /api/ai-assistant/session:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {
-  let topic = '';
   try {
-    const body = await request.json();
-    if (typeof body?.topic === 'string') {
-      topic = body.topic;
-    }
-  } catch (error) {
-    topic = '';
-  }
+    const { createAiSession } = await import("@/lib/data");
 
-  const session = await createAiSession(topic);
-  return NextResponse.json({ session });
+    let topic = "";
+    try {
+      const body = await request.json();
+      if (typeof body?.topic === "string") {
+        topic = body.topic;
+      }
+    } catch (error) {
+      topic = "";
+    }
+
+    const session = await createAiSession(topic);
+    return NextResponse.json({ session });
+  } catch (error) {
+    console.error("Error in POST /api/ai-assistant/session:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
 }
