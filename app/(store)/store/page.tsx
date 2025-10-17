@@ -10,9 +10,8 @@ interface StorePageProps {
   searchParams: Record<string, string | string[] | undefined>;
 }
 
-export default function StorePage({ searchParams }: StorePageProps) {
-  const products = listProducts();
-  const categories = listCategories();
+export default async function StorePage({ searchParams }: StorePageProps) {
+  const [products, categories] = await Promise.all([listProducts(), listCategories()]);
   const initialQuery = typeof searchParams?.query === 'string' ? searchParams.query : '';
 
   return (

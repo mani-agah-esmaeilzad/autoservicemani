@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { createAiSession, listAiSessions } from '@/lib/data';
 
 export async function GET() {
-  return NextResponse.json({ sessions: listAiSessions() });
+  const sessions = await listAiSessions();
+  return NextResponse.json({ sessions });
 }
 
 export async function POST(request: Request) {
@@ -16,6 +17,6 @@ export async function POST(request: Request) {
     topic = '';
   }
 
-  const session = createAiSession(topic);
+  const session = await createAiSession(topic);
   return NextResponse.json({ session });
 }

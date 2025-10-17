@@ -1,7 +1,7 @@
 import AccountDashboard from './AccountDashboard';
 import { getUserDashboard } from '@/lib/data';
 
-export default function AccountPage() {
-  const dashboard = getUserDashboard();
+export default async function AccountPage() {
+  const dashboard = await getUserDashboard();
   return <AccountDashboard dashboard={dashboard} />;
 }

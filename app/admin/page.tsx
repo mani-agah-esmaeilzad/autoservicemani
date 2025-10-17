@@ -1,11 +1,13 @@
 import { listAiSessions, listOrders, listProducts, listSupportTickets } from '@/lib/data';
 
-export default function AdminDashboardPage() {
-  const orders = listOrders();
-  const products = listProducts();
+export default async function AdminDashboardPage() {
+  const [orders, products, aiSessions, supportTickets] = await Promise.all([
+    listOrders(),
+    listProducts(),
+    listAiSessions(),
+    listSupportTickets()
+  ]);
   const revenue = orders.reduce((sum, order) => sum + order.total, 0);
-  const aiSessions = listAiSessions();
-  const supportTickets = listSupportTickets();
   const averageSatisfaction =
     aiSessions.length > 0
       ? Math.round(

@@ -9,4 +9,3 @@ pnpm-lock.yaml
 .DS_Store
 .vscode
 coverage
-.vercel

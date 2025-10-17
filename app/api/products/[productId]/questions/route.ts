@@ -10,7 +10,7 @@ interface RouteContext {
 }
 
 export async function GET(_request: NextRequest, { params }: RouteContext) {
-  const questions = listProductQuestions(params.productId);
+  const questions = await listProductQuestions(params.productId);
   return NextResponse.json({ questions });
 }
 
@@ -23,12 +23,12 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
     return NextResponse.json({ error: 'نام و متن سوال الزامی است.' }, { status: 400 });
   }
 
-  const product = findProductBySlug(params.productId);
+  const product = await findProductBySlug(params.productId);
   if (!product) {
     return NextResponse.json({ error: 'محصول یافت نشد.' }, { status: 404 });
   }
 
-  const entry = addProductQuestion(product.slug, question, author);
+  const entry = await addProductQuestion(product.id, question, author);
   if (!entry) {
     return NextResponse.json({ error: 'ثبت سوال انجام نشد.' }, { status: 500 });
   }

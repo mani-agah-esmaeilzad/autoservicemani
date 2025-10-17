@@ -1,7 +1,7 @@
 import { listSupportTickets } from '@/lib/data';
 
-export default function AdminSupportPage() {
-  const tickets = listSupportTickets();
+export default async function AdminSupportPage() {
+  const tickets = await listSupportTickets();
 
   return (
     <div style={{ display: 'grid', gap: '1.5rem' }}>

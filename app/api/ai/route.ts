@@ -13,11 +13,13 @@ const FALLBACK_RESPONSES = [
   'به خاطر داشته باشید که فیلتر مرغوب و تعویض به‌موقع آن به اندازه انتخاب روغن مناسب اهمیت دارد.'
 ];
 
-function buildFallbackAnswer(message: string) {
+async function buildFallbackAnswer(message: string) {
   const normalized = message.toLowerCase();
-  const products = listProducts();
-  const services = listServices();
-  const brands = listBrands();
+  const [products, services, brands] = await Promise.all([
+    listProducts(),
+    listServices(),
+    listBrands()
+  ]);
 
   if (normalized.includes('روغن') || normalized.includes('oil')) {
     const recommended = products
@@ -99,6 +101,6 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const fallback = buildFallbackAnswer(message);
+  const fallback = await buildFallbackAnswer(message);
   return NextResponse.json({ reply: fallback });
 }

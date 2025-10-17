@@ -65,7 +65,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'MESSAGE_REQUIRED' }, { status: 400 });
   }
 
-  const sessionExists = getAiSession(sessionId);
+  const sessionExists = await getAiSession(sessionId);
   if (!sessionExists) {
     return NextResponse.json({ error: 'SESSION_NOT_FOUND' }, { status: 404 });
   }
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
     createdAt: now.toISOString()
   };
 
-  const sessionWithUser = appendAiMessage(sessionId, userMessage);
+  const sessionWithUser = await appendAiMessage(sessionId, userMessage);
   if (!sessionWithUser) {
     return NextResponse.json({ error: 'FAILED_TO_APPEND_MESSAGE' }, { status: 500 });
   }
@@ -98,7 +98,7 @@ export async function POST(request: Request) {
     createdAt: new Date().toISOString()
   };
 
-  const sessionWithAssistant = appendAiMessage(sessionId, assistantMessage);
+  const sessionWithAssistant = await appendAiMessage(sessionId, assistantMessage);
   if (!sessionWithAssistant) {
     return NextResponse.json({ error: 'FAILED_TO_APPEND_MESSAGE' }, { status: 500 });
   }
@@ -107,7 +107,7 @@ export async function POST(request: Request) {
     100,
     Math.round(((sessionWithAssistant.satisfaction || 90) + 95) / 2)
   );
-  const latestSession = updateAiSession(sessionId, { satisfaction: recalculatedSatisfaction });
+  const latestSession = await updateAiSession(sessionId, { satisfaction: recalculatedSatisfaction });
 
   return NextResponse.json({
     session: latestSession ?? sessionWithAssistant,

@@ -13,24 +13,28 @@ interface ProductPageProps {
   params: { slug: string };
 }
 
-export function generateMetadata({ params }: ProductPageProps): Metadata {
-  const product = findProductBySlug(params.slug);
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const product = await findProductBySlug(params.slug);
   return {
     title: product ? `${product.name} | Auto Service Mani` : 'محصول یافت نشد',
     description: product?.description
   };
 }
 
-export default function ProductPage({ params }: ProductPageProps) {
-  const product = findProductBySlug(params.slug);
+export default async function ProductPage({ params }: ProductPageProps) {
+  const product = await findProductBySlug(params.slug);
 
   if (!product) {
     notFound();
   }
 
-  const reviews = listReviews(product.id);
-  const category = listCategories().find((cat) => cat.id === product.categoryId);
-  const brand = listBrands().find((item) => {
+  const [reviews, categories, brands] = await Promise.all([
+    listReviews(product.id),
+    listCategories(),
+    listBrands()
+  ]);
+  const category = categories.find((cat) => cat.id === product.categoryId);
+  const brand = brands.find((item) => {
     const brandName = item.name.toLowerCase();
     const productBrand = product.brand.toLowerCase();
     return brandName.includes(productBrand) || productBrand.includes(brandName);

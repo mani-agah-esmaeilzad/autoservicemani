@@ -7,8 +7,8 @@ export const metadata = {
     'چت هوشمند برای دریافت پاسخ تخصصی درباره نگهداری خودرو، انتخاب روغن و عیب‌یابی فنی در اتو سرویس مانی.'
 };
 
-export default function AssistantPage() {
-  const sessions = listAiSessions();
+export default async function AssistantPage() {
+  const sessions = await listAiSessions();
 
   return (
     <div className="section" style={{ paddingTop: '2rem' }}>

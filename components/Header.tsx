@@ -13,6 +13,7 @@ const navLinks = [
   { href: '/', label: 'صفحه اصلی' },
   { href: '/store', label: 'فروشگاه', hasMegaMenu: true },
   { href: '/assistant', label: 'دستیار هوشمند' },
+  { href: '/about', label: 'درباره ما' },
   { href: '/contact', label: 'تماس با ما' }
 ];
 
@@ -133,7 +134,14 @@ export default function Header() {
                           className="category-menu__link"
                           onClick={() => setIsDrawerOpen(false)}
                         >
-                          {link.label}
+                          <span className="category-menu__link-icon" aria-hidden="true">
+                            <span className="category-menu__link-icon-swatch" style={{ background: group.accent }} />
+                            <img src={link.icon} alt="" />
+                          </span>
+                          <span className="category-menu__link-text">
+                            <strong>{link.label}</strong>
+                            <span>{link.description}</span>
+                          </span>
                         </Link>
                       ))}
                     </div>

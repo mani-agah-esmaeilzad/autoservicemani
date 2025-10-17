@@ -3,29 +3,84 @@
 import { useEffect, useRef, useState, type FocusEvent, type MouseEvent as ReactMouseEvent } from 'react';
 import Link from 'next/link';
 
-export const categoryGroups = [
+type MegaMenuLink = {
+  href: string;
+  label: string;
+  icon: string;
+  description: string;
+};
+
+export const categoryGroups: Array<{ title: string; accent: string; links: MegaMenuLink[] }> = [
   {
     title: 'روغن‌ها و مایعات',
+    accent: 'var(--color-primary)',
     links: [
-      { href: '/categories/engine-oils', label: 'روغن موتور' },
-      { href: '/categories/transmission', label: 'روغن گیربکس' },
-      { href: '/categories/brake-fluid', label: 'روغن ترمز' }
+      {
+        href: '/categories/engine-oils',
+        label: 'روغن موتور',
+        icon: '/images/categories/engine-oil.svg',
+        description: 'سنتتیک، نیمه‌سنتتیک و ویژه فیلتر DPF'
+      },
+      {
+        href: '/categories/transmission',
+        label: 'روغن گیربکس',
+        icon: '/images/categories/transmission.svg',
+        description: 'ATF، CVT و روغن دنده دستی'
+      },
+      {
+        href: '/categories/brake-fluid',
+        label: 'روغن ترمز',
+        icon: '/images/categories/brake-fluid.svg',
+        description: 'استاندارد DOT و مایع خنک‌کننده'
+      }
     ]
   },
   {
     title: 'مصرفی و قطعات',
+    accent: '#0b8c3c',
     links: [
-      { href: '/categories/filters', label: 'فیلترها' },
-      { href: '/categories/spark-plugs', label: 'شمع و ایگنیشن' },
-      { href: '/categories/belts', label: 'تسمه‌ها' }
+      {
+        href: '/categories/filters',
+        label: 'فیلترها',
+        icon: '/images/categories/filter.svg',
+        description: 'هوا، روغن، کابین و فیلتر سوخت'
+      },
+      {
+        href: '/categories/spark-plugs',
+        label: 'شمع و ایگنیشن',
+        icon: '/images/categories/ignition.svg',
+        description: 'شمع سوزنی، کوئل و سیم‌های ولتاژ'
+      },
+      {
+        href: '/categories/belts',
+        label: 'تسمه‌ها',
+        icon: '/images/categories/belt.svg',
+        description: 'تسمه تایم، دینام و هرزگردها'
+      }
     ]
   },
   {
     title: 'لوازم جانبی و مراقبت',
+    accent: '#0053d6',
     links: [
-      { href: '/categories/car-care', label: 'مراقبت خودرو' },
-      { href: '/categories/accessories', label: 'لوازم جانبی' },
-      { href: '/categories/electronics', label: 'الکترونیکی' }
+      {
+        href: '/categories/car-care',
+        label: 'مراقبت خودرو',
+        icon: '/images/categories/car-care.svg',
+        description: 'شست‌وشو، واکس، پولیش و نانو پوشش'
+      },
+      {
+        href: '/categories/accessories',
+        label: 'لوازم جانبی',
+        icon: '/images/categories/accessories.svg',
+        description: 'نورپردازی، نظم‌دهنده و آپشن‌های کابین'
+      },
+      {
+        href: '/categories/electronics',
+        label: 'تجهیزات الکترونیکی',
+        icon: '/images/categories/electronics.svg',
+        description: 'دوربین، دیاگ همراه و باتری یدکی'
+      }
     ]
   }
 ];
@@ -141,7 +196,14 @@ export default function NavMenu({ isActive = false, label = 'فروشگاه' }: 
                   role="menuitem"
                   onClick={() => setIsOpen(false)}
                 >
-                  {link.label}
+                  <span className="category-menu__link-icon" aria-hidden="true">
+                    <span className="category-menu__link-icon-swatch" style={{ background: group.accent }} />
+                    <img src={link.icon} alt="" />
+                  </span>
+                  <span className="category-menu__link-text">
+                    <strong>{link.label}</strong>
+                    <span>{link.description}</span>
+                  </span>
                 </Link>
               ))}
             </div>

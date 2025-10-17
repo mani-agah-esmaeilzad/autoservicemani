@@ -3,7 +3,8 @@ import { createOrder, listOrders } from '@/lib/data';
 import type { Order } from '@/lib/types';
 
 export async function GET() {
-  return NextResponse.json({ orders: listOrders() });
+  const orders = await listOrders();
+  return NextResponse.json({ orders });
 }
 
 export async function POST(request: Request) {
@@ -25,7 +26,11 @@ export async function POST(request: Request) {
     items: payload.items
   };
 
-  createOrder(order);
-
-  return NextResponse.json({ order }, { status: 201 });
+  try {
+    const stored = await createOrder(order);
+    return NextResponse.json({ order: stored }, { status: 201 });
+  } catch (error) {
+    console.error('Failed to create order', error);
+    return NextResponse.json({ error: 'ثبت سفارش انجام نشد' }, { status: 500 });
+  }
 }

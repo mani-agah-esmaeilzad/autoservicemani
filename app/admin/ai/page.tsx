@@ -1,7 +1,7 @@
 import { listAiSessions } from '@/lib/data';
 
-export default function AdminAiPage() {
-  const sessions = listAiSessions();
+export default async function AdminAiPage() {
+  const sessions = await listAiSessions();
   const totalMessages = sessions.reduce((sum, session) => sum + session.messages.length, 0);
   const averageSatisfaction =
     sessions.length > 0

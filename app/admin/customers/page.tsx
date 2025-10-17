@@ -1,8 +1,7 @@
 import { getUserDashboard, listOrders } from '@/lib/data';
 
-export default function AdminCustomersPage() {
-  const dashboard = getUserDashboard();
-  const orders = listOrders();
+export default async function AdminCustomersPage() {
+  const [dashboard, orders] = await Promise.all([getUserDashboard(), listOrders()]);
 
   return (
     <div style={{ display: 'grid', gap: '1.5rem' }}>

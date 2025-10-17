@@ -6,8 +6,8 @@ interface CategoryPageProps {
   params: { slug: string };
 }
 
-export function generateMetadata({ params }: CategoryPageProps): Metadata {
-  const categories = listCategories();
+export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
+  const categories = await listCategories();
   const category = categories.find((item) => item.slug === params.slug);
   return {
     title: category ? `${category.name} | اتو سرویس مانی` : 'دسته‌بندی فروشگاه',
@@ -15,10 +15,10 @@ export function generateMetadata({ params }: CategoryPageProps): Metadata {
   };
 }
 
-export default function CategoryPage({ params }: CategoryPageProps) {
-  const categories = listCategories();
+export default async function CategoryPage({ params }: CategoryPageProps) {
+  const categories = await listCategories();
   const category = categories.find((item) => item.slug === params.slug);
-  const products = listProductsByCategory(params.slug);
+  const products = await listProductsByCategory(params.slug);
 
   if (!category) {
     return (

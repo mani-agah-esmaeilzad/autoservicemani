@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
-import { listProducts, upsertProduct } from '@/lib/data';
+import { Prisma } from '@prisma/client';
+import { deleteProduct, listProducts, upsertProduct } from '@/lib/data';
 import type { Product } from '@/lib/types';
 
 export async function GET() {
-  return NextResponse.json({ products: listProducts() });
+  const products = await listProducts();
+  return NextResponse.json({ products });
 }
 
 export async function POST(request: Request) {
@@ -42,7 +44,27 @@ export async function POST(request: Request) {
     questions: payload.questions ?? []
   };
 
-  upsertProduct(product);
+  const stored = await upsertProduct(product);
 
-  return NextResponse.json({ product });
+  return NextResponse.json({ product: stored });
+}
+
+export async function DELETE(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+
+  if (!id) {
+    return NextResponse.json({ error: 'شناسه محصول یافت نشد' }, { status: 400 });
+  }
+
+  try {
+    await deleteProduct(id);
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+      return NextResponse.json({ error: 'محصولی با این شناسه یافت نشد' }, { status: 404 });
+    }
+    console.error('Failed to delete product', error);
+    return NextResponse.json({ error: 'حذف محصول انجام نشد' }, { status: 500 });
+  }
 }

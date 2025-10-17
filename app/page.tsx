@@ -4,10 +4,12 @@ import ProductCarousel from '@/components/ProductCarousel';
 import BrandCarousel from '@/components/BrandCarousel';
 import { listBrands, listFeaturedCategories, listProducts } from '@/lib/data';
 
-export default function HomePage() {
-  const categories = listFeaturedCategories();
-  const products = listProducts();
-  const brands = listBrands();
+export default async function HomePage() {
+  const [categories, products, brands] = await Promise.all([
+    listFeaturedCategories(),
+    listProducts(),
+    listBrands()
+  ]);
 
   return (
     <>
