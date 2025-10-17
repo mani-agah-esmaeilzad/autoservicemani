@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
-import { prisma } from './prisma';
+import type { PrismaClient } from '@prisma/client';
+import { getPrismaClient } from './prisma';
 import type {
   Brand,
   Category,
@@ -74,9 +75,23 @@ function isPrismaUnavailableError(error: unknown): boolean {
   );
 }
 
-async function withTableFallback<T>(operation: () => Promise<T>, fallback: T): Promise<T> {
+async function withTableFallback<T>(
+  operation: (client: PrismaClient) => Promise<T>,
+  fallback: T
+): Promise<T> {
+  const client = getPrismaClient();
+
+  if (!client) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('Prisma client unavailable. Returning fallback result.');
+    } else {
+      console.error('Prisma client unavailable. Returning fallback result.');
+    }
+    return fallback;
+  }
+
   try {
-    return await operation();
+    return await operation(client);
   } catch (error) {
     if (isPrismaUnavailableError(error)) {
       if (process.env.NODE_ENV !== 'production') {
@@ -197,8 +212,8 @@ function normalizeOrder(record: Prisma.OrderGetPayload<{}>): Order {
 }
 
 export async function listCategories(): Promise<Category[]> {
-  return withTableFallback(async () => {
-    const records = await prisma.category.findMany({
+  return withTableFallback(async (client) => {
+    const records = await client.category.findMany({
       orderBy: { name: 'asc' }
     });
     return records.map((category) => ({
@@ -213,8 +228,8 @@ export async function listCategories(): Promise<Category[]> {
 }
 
 export async function listFeaturedCategories(): Promise<Category[]> {
-  return withTableFallback(async () => {
-    const records = await prisma.category.findMany({
+  return withTableFallback(async (client) => {
+    const records = await client.category.findMany({
       where: { featured: true },
       orderBy: { name: 'asc' }
     });
@@ -230,8 +245,8 @@ export async function listFeaturedCategories(): Promise<Category[]> {
 }
 
 export async function listBrands(): Promise<Brand[]> {
-  return withTableFallback(async () => {
-    const records = await prisma.brand.findMany({
+  return withTableFallback(async (client) => {
+    const records = await client.brand.findMany({
       orderBy: { name: 'asc' }
     });
     return records.map(normalizeBrand);
@@ -239,8 +254,8 @@ export async function listBrands(): Promise<Brand[]> {
 }
 
 export async function listProducts(): Promise<Product[]> {
-  return withTableFallback(async () => {
-    const records = await prisma.product.findMany({
+  return withTableFallback(async (client) => {
+    const records = await client.product.findMany({
       orderBy: { createdAt: 'desc' },
       include: { brandRef: true }
     });
@@ -249,12 +264,12 @@ export async function listProducts(): Promise<Product[]> {
 }
 
 export async function listProductsByCategory(slug: string): Promise<Product[]> {
-  return withTableFallback(async () => {
-    const category = await prisma.category.findUnique({ where: { slug } });
+  return withTableFallback(async (client) => {
+    const category = await client.category.findUnique({ where: { slug } });
     if (!category) {
       return [];
     }
-    const records = await prisma.product.findMany({
+    const records = await client.product.findMany({
       where: { categoryId: category.id },
       orderBy: { createdAt: 'desc' },
       include: { brandRef: true }
@@ -264,8 +279,8 @@ export async function listProductsByCategory(slug: string): Promise<Product[]> {
 }
 
 export async function findProductBySlug(slug: string): Promise<Product | null> {
-  return withTableFallback(async () => {
-    const record = await prisma.product.findFirst({
+  return withTableFallback(async (client) => {
+    const record = await client.product.findFirst({
       where: { OR: [{ slug }, { id: slug }] },
       include: { brandRef: true }
     });
@@ -296,8 +311,8 @@ export async function addProductQuestion(
   question: string,
   author: string
 ): Promise<ProductQuestion | null> {
-  return withTableFallback(async () => {
-    const record = await prisma.product.findFirst({
+  return withTableFallback(async (client) => {
+    const record = await client.product.findFirst({
       where: { OR: [{ slug: productId }, { id: productId }] },
       select: { id: true, questions: true }
     });
@@ -317,7 +332,7 @@ export async function addProductQuestion(
     const existingQuestions = normalizeQuestions(record.questions);
     const updatedQuestions = [...existingQuestions, newQuestion] as unknown as Prisma.InputJsonValue;
 
-    await prisma.product.update({
+    await client.product.update({
       where: { id: record.id },
       data: {
         questions: updatedQuestions
@@ -329,29 +344,34 @@ export async function addProductQuestion(
 }
 
 export async function listOrders(): Promise<Order[]> {
-  return withTableFallback(async () => {
-    const records = await prisma.order.findMany({ orderBy: { createdAt: 'desc' } });
+  return withTableFallback(async (client) => {
+    const records = await client.order.findMany({ orderBy: { createdAt: 'desc' } });
     return records.map(normalizeOrder);
   }, []);
 }
 
 export async function createOrder(order: Order): Promise<Order> {
-  const record = await prisma.order.create({
-    data: {
-      id: order.id,
-      customerName: order.customerName,
-      customerEmail: order.customerEmail,
-      total: order.total,
-      status: order.status,
-      items: toJsonValue(order.items)
-    }
-  });
-  return normalizeOrder(record);
+  return withTableFallback(
+    async (client) => {
+      const record = await client.order.create({
+        data: {
+          id: order.id,
+          customerName: order.customerName,
+          customerEmail: order.customerEmail,
+          total: order.total,
+          status: order.status,
+          items: toJsonValue(order.items)
+        }
+      });
+      return normalizeOrder(record);
+    },
+    order
+  );
 }
 
 export async function upsertProduct(product: Product): Promise<Product> {
-  return withTableFallback(async () => {
-    const record = await prisma.product.upsert({
+  return withTableFallback(async (client) => {
+    const record = await client.product.upsert({
       where: { id: product.id },
       update: {
         slug: product.slug,
@@ -408,8 +428,8 @@ export async function upsertProduct(product: Product): Promise<Product> {
 
 export async function deleteProduct(productId: string): Promise<void> {
   await withTableFallback(
-    async () => {
-      await prisma.product.delete({ where: { id: productId } });
+    async (client) => {
+      await client.product.delete({ where: { id: productId } });
     },
     undefined
   );
