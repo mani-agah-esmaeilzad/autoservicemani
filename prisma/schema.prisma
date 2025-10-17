@@ -1,0 +1,76 @@
+// Prisma schema for Auto Service Mani
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  description String?
+  image       String?
+  featured    Boolean   @default(false)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Brand {
+  id        String    @id @default(cuid())
+  slug      String    @unique
+  name      String
+  logo      String?
+  country   String?
+  founded   Int?
+  tagline   String?
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Product {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  name            String
+  description     String?
+  longDescription String?
+  price           Int
+  brand           String
+  image           String?
+  categoryId      String
+  rating          Float    @default(5)
+  inStock         Int      @default(0)
+  tags            String[]
+  sku             String
+  highlights      String[]
+  gallery         Json?
+  specifications  Json?
+  compatibility   String[]
+  warranty        String?
+  shipping        String?
+  maintenanceTips String[]
+  faqs            Json?
+  questions       Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  category Category @relation(fields: [categoryId], references: [id])
+  brandId  String?
+  brandRef Brand?   @relation(fields: [brandId], references: [id])
+}
+
+model Order {
+  id            String   @id @default(cuid())
+  customerName  String
+  customerEmail String
+  total         Int
+  status        String
+  items         Json
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
