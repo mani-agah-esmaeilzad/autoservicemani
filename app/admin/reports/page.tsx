@@ -1,6 +1,6 @@
-import { listOrders, listProducts } from '@/lib/data';
 
 export default async function AdminReportsPage() {
+  const { listOrders, listProducts } = await import('@/lib/data');
   const [orders, products] = await Promise.all([listOrders(), listProducts()]);
   const revenue = orders.reduce((sum, order) => sum + order.total, 0);
 
