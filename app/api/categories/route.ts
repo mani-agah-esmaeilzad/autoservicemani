@@ -1,7 +1,15 @@
-import { NextResponse } from 'next/server';
-import { listCategories } from '@/lib/data';
+import { NextResponse } from "next/server";
 
 export async function GET() {
-  const categories = await listCategories();
-  return NextResponse.json({ categories });
+  try {
+    const { listCategories } = await import("@/lib/data");
+    const categories = await listCategories();
+    return NextResponse.json({ categories });
+  } catch (error) {
+    console.error("Error in /api/categories:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
 }
