@@ -1,9 +1,9 @@
-import ProductExplorer from '@/components/ProductExplorer';
-import { listCategories, listProducts } from '@/lib/data';
+import ProductExplorer from "@/components/ProductExplorer";
 
 export const metadata = {
-  title: 'فروشگاه آنلاین اتو سرویس مانی',
-  description: 'مشاهده و خرید اینترنتی تمام محصولات تخصصی نگهداری خودرو'
+  title: "فروشگاه آنلاین اتو سرویس مانی",
+  description:
+    "مشاهده و خرید اینترنتی تمام محصولات تخصصی نگهداری خودرو",
 };
 
 interface StorePageProps {
@@ -11,8 +11,16 @@ interface StorePageProps {
 }
 
 export default async function StorePage({ searchParams }: StorePageProps) {
-  const [products, categories] = await Promise.all([listProducts(), listCategories()]);
-  const initialQuery = typeof searchParams?.query === 'string' ? searchParams.query : '';
+  // ✅ dynamic import برای جلوگیری از ارور build
+  const { listProducts, listCategories } = await import("@/lib/data");
+
+  const [products, categories] = await Promise.all([
+    listProducts(),
+    listCategories(),
+  ]);
+
+  const initialQuery =
+    typeof searchParams?.query === "string" ? searchParams.query : "";
 
   return (
     <div className="section">
@@ -23,10 +31,15 @@ export default async function StorePage({ searchParams }: StorePageProps) {
             <h1>مارکت تخصصی قطعات و مصرفی خودرو</h1>
           </div>
           <p>
-            مجموعه کامل روغن‌ها، فیلترها و لوازم جانبی با امکان ارسال فوری، مشاوره فنی و ضمانت اصالت کالا.
+            مجموعه کامل روغن‌ها، فیلترها و لوازم جانبی با امکان ارسال فوری،
+            مشاوره فنی و ضمانت اصالت کالا.
           </p>
         </header>
-        <ProductExplorer products={products} categories={categories} initialQuery={initialQuery} />
+        <ProductExplorer
+          products={products}
+          categories={categories}
+          initialQuery={initialQuery}
+        />
       </div>
     </div>
   );
