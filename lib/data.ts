@@ -252,8 +252,11 @@ export async function addProductQuestion(
   question: string,
   author: string
 ): Promise<ProductQuestion | null> {
-  const product = await findProductBySlug(productId);
-  if (!product) {
+  const record = await prisma.product.findFirst({
+    where: { OR: [{ slug: productId }, { id: productId }] },
+    select: { id: true, questions: true }
+  });
+  if (!record) {
     return null;
   }
 
@@ -266,10 +269,13 @@ export async function addProductQuestion(
     votes: 0
   };
 
+  const existingQuestions = normalizeQuestions(record.questions);
+  const updatedQuestions = [...existingQuestions, newQuestion] as unknown as Prisma.InputJsonValue;
+
   await prisma.product.update({
-    where: { id: product.id },
+    where: { id: record.id },
     data: {
-      questions: [...product.questions, newQuestion]
+      questions: updatedQuestions
     }
   });
 
