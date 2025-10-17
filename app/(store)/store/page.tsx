@@ -9,6 +9,7 @@ export const metadata = {
 interface StorePageProps {
   searchParams: Record<string, string | string[] | undefined>;
 }
+export const dynamic = "force-dynamic";
 
 export default async function StorePage({ searchParams }: StorePageProps) {
   // ✅ dynamic import برای جلوگیری از ارور build

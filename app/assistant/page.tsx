@@ -7,6 +7,8 @@ export const metadata = {
     'چت هوشمند برای دریافت پاسخ تخصصی درباره نگهداری خودرو، انتخاب روغن و عیب‌یابی فنی در اتو سرویس مانی.'
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function AssistantPage() {
    const { listAiSessions } = await import("@/lib/data");
   const sessions = await listAiSessions();

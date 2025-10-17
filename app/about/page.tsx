@@ -2,6 +2,7 @@ export const metadata = {
   title: 'درباره اتو سرویس مانی',
   description: 'داستان شکل‌گیری و ارزش‌های برند اتو سرویس مانی'
 };
+export const dynamic = "force-dynamic";
 
 export default function AboutPage() {
   return (

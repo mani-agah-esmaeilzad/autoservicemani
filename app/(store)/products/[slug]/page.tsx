@@ -6,6 +6,7 @@ import ProductQuestions from "@/components/ProductQuestions";
 interface ProductPageProps {
   params: { slug: string };
 }
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,

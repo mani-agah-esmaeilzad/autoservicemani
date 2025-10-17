@@ -4,6 +4,7 @@ export const metadata = {
   title: 'تماس با اتو سرویس مانی',
   description: 'مسیرهای ارتباطی با تیم فروش و پشتیبانی Auto Service Mani'
 };
+export const dynamic = "force-dynamic";
 
 export default function ContactPage() {
   return (

@@ -5,6 +5,8 @@ import type { CSSProperties } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 
+export const dynamic = "force-dynamic";
+
 export default function CheckoutPage() {
   const router = useRouter();
   const { state, dispatch } = useCart();

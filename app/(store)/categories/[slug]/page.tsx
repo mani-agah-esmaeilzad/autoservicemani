@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 interface CategoryPageProps {
   params: { slug: string };
 }
-
+export const dynamic = "force-dynamic";
 export async function generateMetadata({
   params,
 }: CategoryPageProps): Promise<Metadata> {

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import CartItemRow from '@/components/CartItemRow';
 import { useCart } from '@/contexts/CartContext';
+export const dynamic = "force-dynamic";
 
 export default function CartPage() {
   const {

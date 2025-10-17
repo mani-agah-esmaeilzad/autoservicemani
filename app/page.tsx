@@ -7,6 +7,7 @@ import HomeServices from '@/components/HomeServices';
 import HomeShowcase from '@/components/HomeShowcase';
 import HomeTestimonials from '@/components/HomeTestimonials';
 
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const {

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 
 export default async function AdminReportsPage() {
   const { listOrders, listProducts } = await import('@/lib/data');
