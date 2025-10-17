@@ -62,6 +62,10 @@ const emptyDashboard: UserDashboard = {
 let supportTickets: SupportTicket[] = [];
 let aiSessions: ChatSession[] = [];
 
+function toJsonValue(value: unknown): Prisma.InputJsonValue {
+  return value as Prisma.InputJsonValue;
+}
+
 function parseJsonArray<T>(value: Prisma.JsonValue | null | undefined): T[] {
   if (Array.isArray(value)) {
     return value as T[];
@@ -295,7 +299,7 @@ export async function createOrder(order: Order): Promise<Order> {
       customerEmail: order.customerEmail,
       total: order.total,
       status: order.status,
-      items: order.items
+      items: toJsonValue(order.items)
     }
   });
   return normalizeOrder(record);
@@ -318,14 +322,14 @@ export async function upsertProduct(product: Product): Promise<Product> {
       tags: product.tags,
       sku: product.sku,
       highlights: product.highlights,
-      gallery: product.gallery,
-      specifications: product.specifications,
+      gallery: toJsonValue(product.gallery),
+      specifications: toJsonValue(product.specifications),
       compatibility: product.compatibility,
       warranty: product.warranty,
       shipping: product.shipping,
       maintenanceTips: product.maintenanceTips,
-      faqs: product.faqs,
-      questions: product.questions
+      faqs: toJsonValue(product.faqs),
+      questions: toJsonValue(product.questions)
     },
     create: {
       id: product.id,
@@ -342,14 +346,14 @@ export async function upsertProduct(product: Product): Promise<Product> {
       tags: product.tags,
       sku: product.sku,
       highlights: product.highlights,
-      gallery: product.gallery,
-      specifications: product.specifications,
+      gallery: toJsonValue(product.gallery),
+      specifications: toJsonValue(product.specifications),
       compatibility: product.compatibility,
       warranty: product.warranty,
       shipping: product.shipping,
       maintenanceTips: product.maintenanceTips,
-      faqs: product.faqs,
-      questions: product.questions
+      faqs: toJsonValue(product.faqs),
+      questions: toJsonValue(product.questions)
     }
   });
 
