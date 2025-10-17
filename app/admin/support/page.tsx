@@ -1,8 +1,6 @@
-export const dynamic = "force-dynamic";
+import { listSupportTickets } from '@/lib/data';
 
 export default async function AdminSupportPage() {
-  const { listSupportTickets } = await import("@/lib/data");
-
   const tickets = await listSupportTickets();
 
   return (

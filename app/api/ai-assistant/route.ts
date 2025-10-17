@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { appendAiMessage, getAiSession, updateAiSession } from '@/lib/data';
 import type { ChatMessage } from '@/lib/types';
 
 const MODEL_NAME = 'gemini-2.0-flash';
@@ -52,7 +53,6 @@ async function requestAssistantReply(messages: ChatMessage[]) {
 }
 
 export async function POST(request: Request) {
-  const { appendAiMessage, getAiSession, updateAiSession } = await import('@/lib/data');
   const body = await request.json();
   const sessionId = String(body.sessionId ?? '').trim();
   const prompt = String(body.message ?? '').trim();

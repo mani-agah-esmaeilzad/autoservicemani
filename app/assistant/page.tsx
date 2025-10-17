@@ -1,5 +1,5 @@
 import AiAssistant from '@/components/AiAssistant';
-// import { listAiSessions } from '@/lib/data';
+import { listAiSessions } from '@/lib/data';
 
 export const metadata = {
   title: 'دستیار فنی هوشمند | Auto Service Mani',
@@ -7,10 +7,7 @@ export const metadata = {
     'چت هوشمند برای دریافت پاسخ تخصصی درباره نگهداری خودرو، انتخاب روغن و عیب‌یابی فنی در اتو سرویس مانی.'
 };
 
-export const dynamic = "force-dynamic";
-
 export default async function AssistantPage() {
-   const { listAiSessions } = await import("@/lib/data");
   const sessions = await listAiSessions();
 
   return (

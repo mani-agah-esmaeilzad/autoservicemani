@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import type { CSSProperties } from 'react';
-export const dynamic = "force-dynamic";
 
 export default function AdminSettingsPage() {
   const [form, setForm] = useState({

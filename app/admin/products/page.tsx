@@ -3,7 +3,6 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
 import type { Category, Product, ProductSpecification } from '@/lib/types';
-export const dynamic = "force-dynamic";
 
 type ProductFormState = Partial<Product>;
 

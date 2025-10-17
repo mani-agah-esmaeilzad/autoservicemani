@@ -1,15 +1,12 @@
 import type { Metadata } from 'next';
-// import { listServices } from '@/lib/data';
+import { listServices } from '@/lib/data';
 
 export const metadata: Metadata = {
   title: 'خدمات حضوری | اتو سرویس مانی',
   description: 'معرفی خدمات تخصصی تعمیر و نگهداری خودرو توسط اتو سرویس مانی با امکان رزرو آنلاین.',
 };
-export const dynamic = "force-dynamic";
 
 export default async function ServicesPage() {
-   const { listServices } = await import("@/lib/data");
-
   const services = await listServices();
 
   return (

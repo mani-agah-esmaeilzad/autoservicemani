@@ -1,7 +1,6 @@
-export const dynamic = "force-dynamic";
+import { listOrders } from '@/lib/data';
 
 export default async function AdminOrdersPage() {
-  const { listOrders } = await import('@/lib/data'); 
   const orders = await listOrders();
 
   return (

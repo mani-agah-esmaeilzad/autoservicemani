@@ -6,16 +6,9 @@ import HomeHighlights from '@/components/HomeHighlights';
 import HomeServices from '@/components/HomeServices';
 import HomeShowcase from '@/components/HomeShowcase';
 import HomeTestimonials from '@/components/HomeTestimonials';
-
-export const dynamic = "force-dynamic";
+import { listBrands, listFeaturedCategories, listProducts, listServices } from '@/lib/data';
 
 export default async function HomePage() {
-  const {
-    listBrands,
-    listFeaturedCategories,
-    listProducts,
-    listServices,
-  } = await import("@/lib/data");
   const [categories, products, brands, services] = await Promise.all([
     listFeaturedCategories(),
     listProducts(),

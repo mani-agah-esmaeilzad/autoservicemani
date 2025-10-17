@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import type { UserDashboard } from '@/lib/types';
-export const dynamic = "force-dynamic";
 
 interface AccountDashboardProps {
   dashboard: UserDashboard;

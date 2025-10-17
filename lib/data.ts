@@ -62,17 +62,27 @@ const emptyDashboard: UserDashboard = {
 let supportTickets: SupportTicket[] = [];
 let aiSessions: ChatSession[] = [];
 
-function isMissingTableError(error: unknown): boolean {
-  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2021';
+function isPrismaUnavailableError(error: unknown): boolean {
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    return ['P2021', 'P1000', 'P1001', 'P1010', 'P1011', 'P1012', 'P1013'].includes(error.code);
+  }
+
+  return (
+    error instanceof Prisma.PrismaClientInitializationError ||
+    error instanceof Prisma.PrismaClientRustPanicError ||
+    error instanceof Prisma.PrismaClientUnknownRequestError
+  );
 }
 
 async function withTableFallback<T>(operation: () => Promise<T>, fallback: T): Promise<T> {
   try {
     return await operation();
   } catch (error) {
-    if (isMissingTableError(error)) {
+    if (isPrismaUnavailableError(error)) {
       if (process.env.NODE_ENV !== 'production') {
-        console.warn('Prisma table is missing, returning fallback result.', error);
+        console.warn('Prisma is unavailable, returning fallback result.', error);
+      } else {
+        console.error('Prisma is unavailable, returning fallback result.');
       }
       return fallback;
     }

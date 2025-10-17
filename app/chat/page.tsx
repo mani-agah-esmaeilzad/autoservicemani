@@ -6,9 +6,6 @@ import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { ChatMessage } from '@/lib/types';
 
-export const dynamic = "force-dynamic";
-
-
 const initialAssistantMessage: ChatMessage = {
   id: 'intro',
   role: 'assistant',

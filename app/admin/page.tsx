@@ -1,12 +1,6 @@
-export const dynamic = "force-dynamic";
+import { listAiSessions, listOrders, listProducts, listSupportTickets } from '@/lib/data';
 
 export default async function AdminDashboardPage() {
-  const {
-    listOrders,
-    listProducts,
-    listAiSessions,
-    listSupportTickets,
-  } = await import('@/lib/data'); 
   const [orders, products, aiSessions, supportTickets] = await Promise.all([
     listOrders(),
     listProducts(),
@@ -17,9 +11,9 @@ export default async function AdminDashboardPage() {
   const averageSatisfaction =
     aiSessions.length > 0
       ? Math.round(
-        aiSessions.reduce((sum, session) => sum + (session.satisfaction || 0), 0) /
-        aiSessions.length
-      )
+          aiSessions.reduce((sum, session) => sum + (session.satisfaction || 0), 0) /
+            aiSessions.length
+        )
       : 0;
   const totalAiMessages = aiSessions.reduce(
     (sum, session) => sum + session.messages.length,
