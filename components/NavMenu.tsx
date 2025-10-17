@@ -10,6 +10,13 @@ type MegaMenuLink = {
   description: string;
 };
 
+type CollectionHighlight = {
+  title: string;
+  href: string;
+  accent: string;
+  blurb: string;
+};
+
 export const categoryGroups: Array<{ title: string; accent: string; links: MegaMenuLink[] }> = [
   {
     title: 'روغن‌ها و مایعات',
@@ -82,6 +89,27 @@ export const categoryGroups: Array<{ title: string; accent: string; links: MegaM
         description: 'دوربین، دیاگ همراه و باتری یدکی'
       }
     ]
+  }
+];
+
+const collectionHighlights: CollectionHighlight[] = [
+  {
+    title: 'پکیج سرویس دوره‌ای',
+    href: '/store?collection=maintenance',
+    accent: 'var(--color-primary)',
+    blurb: 'هر آنچه برای سرویس ۱۰ هزار کیلومتر نیاز دارید در یک پکیج اقتصادی.'
+  },
+  {
+    title: 'کیت‌های دیتیلینگ حرفه‌ای',
+    href: '/store?collection=detailing',
+    accent: '#f97316',
+    blurb: 'ظاهری درخشان با انتخاب بهترین محصولات مراقبت از بدنه و کابین.'
+  },
+  {
+    title: 'تجهیزات سفر ایمن',
+    href: '/store?collection=travel',
+    accent: '#0ea5e9',
+    blurb: 'از جامپ استارتر تا کیت کمک‌های اولیه برای سفرهای بدون دغدغه.'
   }
 ];
 
@@ -181,34 +209,75 @@ export default function NavMenu({ isActive = false, label = 'فروشگاه' }: 
         onFocus={() => setIsOpen(true)}
       >
         {label}
+        <span className="category-trigger-link__caret" aria-hidden="true" />
       </Link>
 
       <div className={`category-menu ${isOpen ? 'open' : ''}`} role="menu">
-        {categoryGroups.map((group) => (
-          <div key={group.title} className="category-menu__group">
-            <h3>{group.title}</h3>
-            <div className="category-menu__links">
-              {group.links.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="category-menu__link"
-                  role="menuitem"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <span className="category-menu__link-icon" aria-hidden="true">
-                    <span className="category-menu__link-icon-swatch" style={{ background: group.accent }} />
-                    <img src={link.icon} alt="" />
-                  </span>
-                  <span className="category-menu__link-text">
-                    <strong>{link.label}</strong>
-                    <span>{link.description}</span>
-                  </span>
-                </Link>
-              ))}
+        <div className="category-menu__content">
+          <aside className="category-menu__summary">
+            <div className="category-menu__summary-header">
+              <span className="category-menu__summary-badge">جدید</span>
+              <h3>همه چیز برای سرویس دوره‌ای</h3>
             </div>
+            <p>
+              از روغن موتورهای پریمیوم تا ابزار تخصصی؛ برای هر سرویس دوره‌ای و تیونینگ قطعه پیدا کنید.
+            </p>
+            <ul>
+              <li>پیشنهادهای هوشمند بر اساس مدل خودرو</li>
+              <li>امکان رزرو سرویس در محل همزمان با خرید</li>
+              <li>پشتیبانی ۲۴ ساعته توسط کارشناسان فنی</li>
+            </ul>
+            <Link href="/assistant" className="btn btn-ghost btn-small">
+              گفتگو با دستیار هوشمند
+            </Link>
+          </aside>
+          <div className="category-menu__groups">
+            {categoryGroups.map((group) => (
+              <div key={group.title} className="category-menu__group">
+                <div className="category-menu__group-header">
+                  <span className="category-menu__group-accent" style={{ background: group.accent }} />
+                  <h4>{group.title}</h4>
+                </div>
+                <div className="category-menu__links">
+                  {group.links.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="category-menu__link"
+                      role="menuitem"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <span className="category-menu__link-icon" aria-hidden="true">
+                        <img src={link.icon} alt="" />
+                      </span>
+                      <span className="category-menu__link-text">
+                        <strong>{link.label}</strong>
+                        <span>{link.description}</span>
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
+        <footer className="category-menu__footer">
+          {collectionHighlights.map((item) => (
+            <Link
+              key={item.title}
+              href={item.href}
+              className="category-menu__collection"
+              onClick={() => setIsOpen(false)}
+            >
+              <span className="category-menu__collection-accent" style={{ background: item.accent }} />
+              <div>
+                <strong>{item.title}</strong>
+                <p>{item.blurb}</p>
+              </div>
+              <span className="category-menu__collection-caret" aria-hidden="true" />
+            </Link>
+          ))}
+        </footer>
       </div>
     </div>
   );
