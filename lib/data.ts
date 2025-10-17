@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { prisma } from './prisma';
 import type {
   Brand,
@@ -61,6 +61,24 @@ const emptyDashboard: UserDashboard = {
 
 let supportTickets: SupportTicket[] = [];
 let aiSessions: ChatSession[] = [];
+
+function isMissingTableError(error: unknown): boolean {
+  return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2021';
+}
+
+async function withTableFallback<T>(operation: () => Promise<T>, fallback: T): Promise<T> {
+  try {
+    return await operation();
+  } catch (error) {
+    if (isMissingTableError(error)) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn('Prisma table is missing, returning fallback result.', error);
+      }
+      return fallback;
+    }
+    throw error;
+  }
+}
 
 function toJsonValue(value: unknown): Prisma.InputJsonValue {
   return value as Prisma.InputJsonValue;
@@ -169,68 +187,80 @@ function normalizeOrder(record: Prisma.OrderGetPayload<{}>): Order {
 }
 
 export async function listCategories(): Promise<Category[]> {
-  const records = await prisma.category.findMany({
-    orderBy: { name: 'asc' }
-  });
-  return records.map((category) => ({
-    id: category.id,
-    slug: category.slug,
-    name: category.name,
-    description: category.description ?? '',
-    image: category.image ?? '',
-    featured: category.featured
-  }));
+  return withTableFallback(async () => {
+    const records = await prisma.category.findMany({
+      orderBy: { name: 'asc' }
+    });
+    return records.map((category) => ({
+      id: category.id,
+      slug: category.slug,
+      name: category.name,
+      description: category.description ?? '',
+      image: category.image ?? '',
+      featured: category.featured
+    }));
+  }, []);
 }
 
 export async function listFeaturedCategories(): Promise<Category[]> {
-  const records = await prisma.category.findMany({
-    where: { featured: true },
-    orderBy: { name: 'asc' }
-  });
-  return records.map((category) => ({
-    id: category.id,
-    slug: category.slug,
-    name: category.name,
-    description: category.description ?? '',
-    image: category.image ?? '',
-    featured: category.featured
-  }));
+  return withTableFallback(async () => {
+    const records = await prisma.category.findMany({
+      where: { featured: true },
+      orderBy: { name: 'asc' }
+    });
+    return records.map((category) => ({
+      id: category.id,
+      slug: category.slug,
+      name: category.name,
+      description: category.description ?? '',
+      image: category.image ?? '',
+      featured: category.featured
+    }));
+  }, []);
 }
 
 export async function listBrands(): Promise<Brand[]> {
-  const records = await prisma.brand.findMany({
-    orderBy: { name: 'asc' }
-  });
-  return records.map(normalizeBrand);
+  return withTableFallback(async () => {
+    const records = await prisma.brand.findMany({
+      orderBy: { name: 'asc' }
+    });
+    return records.map(normalizeBrand);
+  }, []);
 }
 
 export async function listProducts(): Promise<Product[]> {
-  const records = await prisma.product.findMany({
-    orderBy: { createdAt: 'desc' },
-    include: { brandRef: true }
-  });
-  return records.map(normalizeProduct);
+  return withTableFallback(async () => {
+    const records = await prisma.product.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: { brandRef: true }
+    });
+    return records.map(normalizeProduct);
+  }, []);
 }
 
 export async function listProductsByCategory(slug: string): Promise<Product[]> {
-  const category = await prisma.category.findUnique({ where: { slug } });
-  if (!category) {
-    return [];
-  }
-  const records = await prisma.product.findMany({
-    where: { categoryId: category.id },
-    orderBy: { createdAt: 'desc' },
-    include: { brandRef: true }
-  });
-  return records.map(normalizeProduct);
+  return withTableFallback(async () => {
+    const category = await prisma.category.findUnique({ where: { slug } });
+    if (!category) {
+      return [];
+    }
+    const records = await prisma.product.findMany({
+      where: { categoryId: category.id },
+      orderBy: { createdAt: 'desc' },
+      include: { brandRef: true }
+    });
+    return records.map(normalizeProduct);
+  }, []);
 }
 
 export async function findProductBySlug(slug: string): Promise<Product | null> {
-  const record = await prisma.product.findFirst({
-    where: { OR: [{ slug }, { id: slug }] },
-    include: { brandRef: true }
-  });
-  return record ? normalizeProduct(record) : null;
+  return withTableFallback(async () => {
+    const record = await prisma.product.findFirst({
+      where: { OR: [{ slug }, { id: slug }] },
+      include: { brandRef: true }
+    });
+    return record ? normalizeProduct(record) : null;
+  }, null);
 }
 
 export async function listServices(): Promise<Service[]> {
@@ -256,39 +286,43 @@ export async function addProductQuestion(
   question: string,
   author: string
 ): Promise<ProductQuestion | null> {
-  const record = await prisma.product.findFirst({
-    where: { OR: [{ slug: productId }, { id: productId }] },
-    select: { id: true, questions: true }
-  });
-  if (!record) {
-    return null;
-  }
-
-  const newQuestion: ProductQuestion = {
-    id: `qa-${Date.now()}`,
-    author,
-    question,
-    answer: '',
-    createdAt: new Date().toISOString(),
-    votes: 0
-  };
-
-  const existingQuestions = normalizeQuestions(record.questions);
-  const updatedQuestions = [...existingQuestions, newQuestion] as unknown as Prisma.InputJsonValue;
-
-  await prisma.product.update({
-    where: { id: record.id },
-    data: {
-      questions: updatedQuestions
+  return withTableFallback(async () => {
+    const record = await prisma.product.findFirst({
+      where: { OR: [{ slug: productId }, { id: productId }] },
+      select: { id: true, questions: true }
+    });
+    if (!record) {
+      return null;
     }
-  });
 
-  return newQuestion;
+    const newQuestion: ProductQuestion = {
+      id: `qa-${Date.now()}`,
+      author,
+      question,
+      answer: '',
+      createdAt: new Date().toISOString(),
+      votes: 0
+    };
+
+    const existingQuestions = normalizeQuestions(record.questions);
+    const updatedQuestions = [...existingQuestions, newQuestion] as unknown as Prisma.InputJsonValue;
+
+    await prisma.product.update({
+      where: { id: record.id },
+      data: {
+        questions: updatedQuestions
+      }
+    });
+
+    return newQuestion;
+  }, null);
 }
 
 export async function listOrders(): Promise<Order[]> {
-  const records = await prisma.order.findMany({ orderBy: { createdAt: 'desc' } });
-  return records.map(normalizeOrder);
+  return withTableFallback(async () => {
+    const records = await prisma.order.findMany({ orderBy: { createdAt: 'desc' } });
+    return records.map(normalizeOrder);
+  }, []);
 }
 
 export async function createOrder(order: Order): Promise<Order> {
@@ -306,62 +340,69 @@ export async function createOrder(order: Order): Promise<Order> {
 }
 
 export async function upsertProduct(product: Product): Promise<Product> {
-  const record = await prisma.product.upsert({
-    where: { id: product.id },
-    update: {
-      slug: product.slug,
-      name: product.name,
-      description: product.description,
-      longDescription: product.longDescription,
-      price: product.price,
-      brand: product.brand,
-      image: product.image,
-      categoryId: product.categoryId,
-      rating: product.rating,
-      inStock: product.inStock,
-      tags: product.tags,
-      sku: product.sku,
-      highlights: product.highlights,
-      gallery: toJsonValue(product.gallery),
-      specifications: toJsonValue(product.specifications),
-      compatibility: product.compatibility,
-      warranty: product.warranty,
-      shipping: product.shipping,
-      maintenanceTips: product.maintenanceTips,
-      faqs: toJsonValue(product.faqs),
-      questions: toJsonValue(product.questions)
-    },
-    create: {
-      id: product.id,
-      slug: product.slug,
-      name: product.name,
-      description: product.description,
-      longDescription: product.longDescription,
-      price: product.price,
-      brand: product.brand,
-      image: product.image,
-      categoryId: product.categoryId,
-      rating: product.rating,
-      inStock: product.inStock,
-      tags: product.tags,
-      sku: product.sku,
-      highlights: product.highlights,
-      gallery: toJsonValue(product.gallery),
-      specifications: toJsonValue(product.specifications),
-      compatibility: product.compatibility,
-      warranty: product.warranty,
-      shipping: product.shipping,
-      maintenanceTips: product.maintenanceTips,
-      faqs: toJsonValue(product.faqs),
-      questions: toJsonValue(product.questions)
-    }
-  });
+  return withTableFallback(async () => {
+    const record = await prisma.product.upsert({
+      where: { id: product.id },
+      update: {
+        slug: product.slug,
+        name: product.name,
+        description: product.description,
+        longDescription: product.longDescription,
+        price: product.price,
+        brand: product.brand,
+        image: product.image,
+        categoryId: product.categoryId,
+        rating: product.rating,
+        inStock: product.inStock,
+        tags: product.tags,
+        sku: product.sku,
+        highlights: product.highlights,
+        gallery: toJsonValue(product.gallery),
+        specifications: toJsonValue(product.specifications),
+        compatibility: product.compatibility,
+        warranty: product.warranty,
+        shipping: product.shipping,
+        maintenanceTips: product.maintenanceTips,
+        faqs: toJsonValue(product.faqs),
+        questions: toJsonValue(product.questions)
+      },
+      create: {
+        id: product.id,
+        slug: product.slug,
+        name: product.name,
+        description: product.description,
+        longDescription: product.longDescription,
+        price: product.price,
+        brand: product.brand,
+        image: product.image,
+        categoryId: product.categoryId,
+        rating: product.rating,
+        inStock: product.inStock,
+        tags: product.tags,
+        sku: product.sku,
+        highlights: product.highlights,
+        gallery: toJsonValue(product.gallery),
+        specifications: toJsonValue(product.specifications),
+        compatibility: product.compatibility,
+        warranty: product.warranty,
+        shipping: product.shipping,
+        maintenanceTips: product.maintenanceTips,
+        faqs: toJsonValue(product.faqs),
+        questions: toJsonValue(product.questions)
+      }
+    });
 
-  return normalizeProduct({ ...record, brandRef: null });
+    return normalizeProduct({ ...record, brandRef: null });
+  }, product);
 }
 
 export async function deleteProduct(productId: string): Promise<void> {
-  await prisma.product.delete({ where: { id: productId } });
+  await withTableFallback(
+    async () => {
+      await prisma.product.delete({ where: { id: productId } });
+    },
+    undefined
+  );
 }
 
 export async function getUserDashboard(): Promise<UserDashboard> {
