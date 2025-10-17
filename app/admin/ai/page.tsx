@@ -1,14 +1,15 @@
-import { listAiSessions } from '@/lib/data';
 
 export default async function AdminAiPage() {
+  const { listAiSessions } = await import("@/lib/data");
+
   const sessions = await listAiSessions();
   const totalMessages = sessions.reduce((sum, session) => sum + session.messages.length, 0);
   const averageSatisfaction =
     sessions.length > 0
       ? Math.round(
-          sessions.reduce((sum, session) => sum + (session.satisfaction || 0), 0) /
-            sessions.length
-        )
+        sessions.reduce((sum, session) => sum + (session.satisfaction || 0), 0) /
+        sessions.length
+      )
       : 0;
 
   return (
