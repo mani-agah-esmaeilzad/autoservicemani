@@ -1,21 +1,30 @@
-import ProductCard from '@/components/ProductCard';
-import { listCategories, listProductsByCategory } from '@/lib/data';
-import type { Metadata } from 'next';
+import ProductCard from "@/components/ProductCard";
+import type { Metadata } from "next";
 
 interface CategoryPageProps {
   params: { slug: string };
 }
 
-export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: CategoryPageProps): Promise<Metadata> {
+  // ✅ dynamic import برای جلوگیری از ارور build
+  const { listCategories } = await import("@/lib/data");
   const categories = await listCategories();
   const category = categories.find((item) => item.slug === params.slug);
+
   return {
-    title: category ? `${category.name} | اتو سرویس مانی` : 'دسته‌بندی فروشگاه',
-    description: category?.description
+    title: category
+      ? `${category.name} | اتو سرویس مانی`
+      : "دسته‌بندی فروشگاه",
+    description: category?.description,
   };
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
+  // ✅ dynamic import فقط در زمان اجرا، نه در زمان build
+  const { listCategories, listProductsByCategory } = await import("@/lib/data");
+
   const categories = await listCategories();
   const category = categories.find((item) => item.slug === params.slug);
   const products = await listProductsByCategory(params.slug);
@@ -33,13 +42,20 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <div className="section">
-      <div className="container" style={{ display: 'grid', gap: '1.5rem' }}>
-        <header style={{ display: 'grid', gap: '0.75rem' }}>
+      <div className="container" style={{ display: "grid", gap: "1.5rem" }}>
+        <header style={{ display: "grid", gap: "0.75rem" }}>
           <h1>{category.name}</h1>
-          <p style={{ color: 'var(--color-muted)', margin: 0 }}>{category.description}</p>
+          <p style={{ color: "var(--color-muted)", margin: 0 }}>
+            {category.description}
+          </p>
         </header>
         {products.length > 0 ? (
-          <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
+          <div
+            className="grid"
+            style={{
+              gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+            }}
+          >
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
