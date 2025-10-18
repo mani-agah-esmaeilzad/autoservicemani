@@ -4,12 +4,7 @@ import ProductCarousel from '@/components/ProductCarousel';
 import BrandCarousel from '@/components/BrandCarousel';
 import HomeHighlights from '@/components/HomeHighlights';
 import HomeServices from '@/components/HomeServices';
-import HomeShowcase from '@/components/HomeShowcase';
 import HomeTestimonials from '@/components/HomeTestimonials';
-import HomeStats from '@/components/HomeStats';
-import HomeGallery from '@/components/HomeGallery';
-import HomeInsights from '@/components/HomeInsights';
-import HomeCTA from '@/components/HomeCTA';
 import { listBrands, listFeaturedCategories, listProducts, listServices } from '@/lib/data';
 
 export default async function HomePage() {
@@ -20,35 +15,22 @@ export default async function HomePage() {
     listServices()
   ]);
 
-  const topPicks = products.slice(0, 8);
-  const newArrivals = products.slice(8, 16);
+  const featuredProducts = products.slice(0, 8);
 
   return (
     <>
       <HeroBanner />
-      <HomeStats />
       <HomeHighlights />
-      <HomeGallery />
-      <HomeShowcase />
       <CategoryGrid categories={categories} />
+      {featuredProducts.length > 0 && (
+        <ProductCarousel
+          products={featuredProducts}
+          title="پیشنهادهای ویژه اتو سرویس مانی"
+          description="برگزیده‌ای از محبوب‌ترین کالاهای سرویس خودرو با ارسال سریع"
+        />
+      )}
       <BrandCarousel brands={brands} />
-      {topPicks.length > 0 && (
-        <ProductCarousel
-          products={topPicks}
-          title="پیشنهادهای منتخب اتو سرویس مانی"
-          description="ترکیب ویژه‌ای از کالاهای ضروری برای سرویس دوره‌ای خودرو شما"
-        />
-      )}
-      {newArrivals.length > 0 && (
-        <ProductCarousel
-          products={newArrivals}
-          title="جدیدترین کالاهای افزوده‌شده"
-          description="تازه‌ترین محصولات فروشگاه با آپدیت روزانه برای خودروهای محبوب"
-        />
-      )}
       <HomeServices services={services} />
-      <HomeInsights />
-      <HomeCTA />
       <HomeTestimonials />
     </>
   );
