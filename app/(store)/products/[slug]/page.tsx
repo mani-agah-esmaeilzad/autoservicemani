@@ -1,12 +1,17 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import AddToCartButton from '@/components/AddToCartButton';
+import ProductCarousel from '@/components/ProductCarousel';
 import ProductQuestions from '@/components/ProductQuestions';
 import {
   findProductBySlug,
   listBrands,
   listCategories,
-  listReviews
+  listProducts,
+  listProductsByCategory,
+  listReviews,
+  listServices
 } from '@/lib/data';
 
 interface ProductPageProps {
@@ -28,10 +33,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
-  const [reviews, categories, brands] = await Promise.all([
+  const [reviews, categories, brands, services] = await Promise.all([
     listReviews(product.id),
     listCategories(),
-    listBrands()
+    listBrands(),
+    listServices()
   ]);
   const category = categories.find((cat) => cat.id === product.categoryId);
   const brand = brands.find((item) => {
@@ -43,6 +49,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
     : product.rating;
   const primaryImage = product.gallery[0] ?? { src: product.image, alt: product.name };
+  const relatedPool = category
+    ? await listProductsByCategory(category.slug)
+    : await listProducts();
+  const relatedProducts = relatedPool.filter((item) => item.id !== product.id).slice(0, 8);
+  const serviceHighlights = services.slice(0, 3);
 
   return (
     <div className="section">
@@ -74,6 +85,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <span>تعداد نظرات: {reviews.length}</span>
           </div>
 
+          <div className="product-page__assurance">
+            <div>
+              <strong>تحویل سریع</strong>
+              <p>ارسال در کمتر از ۲۴ ساعت در تهران و ۳ روز کاری در سایر شهرها.</p>
+            </div>
+            <div>
+              <strong>ضمانت اصالت</strong>
+              <p>تمامی کالاها با گارانتی اصالت و تاریخ تولید جدید عرضه می‌شوند.</p>
+            </div>
+            <div>
+              <strong>نصب در محل</strong>
+              <p>رزرو سرویس تعویض و بازدید فنی هم‌زمان با ثبت سفارش محصول.</p>
+            </div>
+          </div>
+
           {brand && (
             <div className="product-page__brand">
               <img src={brand.logo} alt={`لوگوی ${brand.name}`} />
@@ -96,6 +122,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </ul>
           </div>
 
+          <div className="product-page__metrics">
+            <div>
+              <strong>{product.inStock > 0 ? `${product.inStock} عدد` : 'ناموجود'}</strong>
+              <span>موجودی فعلی انبار</span>
+            </div>
+            <div>
+              <strong>{product.rating.toFixed(1)}</strong>
+              <span>میانگین امتیاز کارشناسان</span>
+            </div>
+            <div>
+              <strong>{product.compatibility.length}</strong>
+              <span>مدل‌های تاییدشده سازگاری</span>
+            </div>
+          </div>
+
           <div className="product-page__purchase">
             <div>
               <strong className="product-page__price">{product.price.toLocaleString('fa-IR')} تومان</strong>
@@ -115,6 +156,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <strong>گارانتی اصالت</strong>
               <p>{product.warranty}</p>
             </div>
+          </div>
+
+          <div className="product-page__cta-grid">
+            <Link href="/services" className="product-page__cta">
+              <span>رزرو سرویس حضوری</span>
+              <small>هماهنگی با تکنسین‌های اتو سرویس مانی</small>
+            </Link>
+            <Link href="/assistant" className="product-page__cta product-page__cta--ghost">
+              <span>گفتگو با دستیار هوشمند</span>
+              <small>سوال فنی داری؟ همین حالا بپرس.</small>
+            </Link>
           </div>
         </div>
       </div>
@@ -151,6 +203,25 @@ export default async function ProductPage({ params }: ProductPageProps) {
             ))}
           </ul>
         </section>
+
+        {serviceHighlights.length > 0 && (
+          <section className="card product-services">
+            <h2>خدمات پیشنهادی پس از خرید</h2>
+            <ul>
+              {serviceHighlights.map((service) => (
+                <li key={service.id}>
+                  <div>
+                    <strong>{service.name}</strong>
+                    <p>{service.description}</p>
+                  </div>
+                  <span>
+                    {service.price.toLocaleString('fa-IR')} تومان • {service.duration}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
 
       <div className="container product-page__sections">
@@ -199,6 +270,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <ProductQuestions productId={product.slug} initialQuestions={product.questions} />
         </section>
       </div>
+
+      {relatedProducts.length > 0 && (
+        <ProductCarousel
+          products={relatedProducts}
+          title="کالاهای مکمل این محصول"
+          description="گزیده‌ای از محصولات مرتبط برای تکمیل سرویس خودرو"
+        />
+      )}
     </div>
   );
 }

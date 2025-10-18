@@ -7,6 +7,15 @@ export interface Category {
   featured?: boolean;
 }
 
+export interface CategoryInput {
+  id?: string;
+  slug?: string;
+  name: string;
+  description?: string;
+  image?: string;
+  featured?: boolean;
+}
+
 export interface Product {
   id: string;
   slug: string;

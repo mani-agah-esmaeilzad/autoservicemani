@@ -4,10 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import NavMenu, { categoryGroups } from './NavMenu';
+import NavMenu from './NavMenu';
 import SearchBar from './SearchBar';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
+import type { Category } from '@/lib/types';
 
 const navLinks = [
   { href: '/', label: 'صفحه اصلی' },
@@ -28,6 +29,8 @@ export default function Header() {
   const [portalElement, setPortalElement] = useState<HTMLElement | null>(null);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
 
   const totalItems = items.reduce((total, item) => total + item.quantity, 0);
 
@@ -48,6 +51,41 @@ export default function Header() {
     }
 
     setPortalElement(document.body);
+  }, []);
+
+  useEffect(() => {
+    let isActive = true;
+    const controller = new AbortController();
+
+    const loadCategories = async () => {
+      try {
+        setIsCategoriesLoading(true);
+        const response = await fetch('/api/categories', { cache: 'no-store', signal: controller.signal });
+        if (!response.ok) {
+          throw new Error('FAILED_TO_LOAD_CATEGORIES');
+        }
+        const data = await response.json();
+        if (isActive) {
+          setCategories(Array.isArray(data.categories) ? data.categories : []);
+        }
+      } catch (error) {
+        if (isActive && !(error instanceof DOMException && error.name === 'AbortError')) {
+          console.error('Failed to load categories', error);
+          setCategories([]);
+        }
+      } finally {
+        if (isActive) {
+          setIsCategoriesLoading(false);
+        }
+      }
+    };
+
+    loadCategories().catch((error) => console.error(error));
+
+    return () => {
+      isActive = false;
+      controller.abort();
+    };
   }, []);
 
   useEffect(() => {
@@ -105,7 +143,7 @@ export default function Header() {
               </div>
               <nav className="mobile-drawer__nav">
                 {navLinks.map((link) => {
-                  const isActive = link.hasMegaMenu
+                  const isActiveLink = link.hasMegaMenu
                     ? pathname.startsWith('/store') || pathname.startsWith('/categories') || pathname.startsWith('/products')
                     : pathname === link.href;
 
@@ -113,7 +151,7 @@ export default function Header() {
                     <Link
                       key={link.href}
                       href={link.href}
-                      className={`nav-link ${isActive ? 'active' : ''}`}
+                      className={`nav-link ${isActiveLink ? 'active' : ''}`}
                       onClick={() => setIsDrawerOpen(false)}
                     >
                       {link.label}
@@ -123,30 +161,40 @@ export default function Header() {
               </nav>
               <div className="mobile-drawer__categories">
                 <h3>دسته‌بندی محصولات</h3>
-                {categoryGroups.map((group) => (
-                  <div key={group.title} className="category-menu__group">
-                    <h3>{group.title}</h3>
-                    <div className="category-menu__links">
-                      {group.links.map((link) => (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          className="category-menu__link"
-                          onClick={() => setIsDrawerOpen(false)}
-                        >
-                          <span className="category-menu__link-icon" aria-hidden="true">
-                            <span className="category-menu__link-icon-swatch" style={{ background: group.accent }} />
-                            <img src={link.icon} alt="" />
-                          </span>
-                          <span className="category-menu__link-text">
-                            <strong>{link.label}</strong>
-                            <span>{link.description}</span>
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
+                {isCategoriesLoading && (
+                  <div className="mobile-drawer__category-skeletons">
+                    {Array.from({ length: 4 }).map((_, index) => (
+                      <div key={`mobile-category-skeleton-${index}`} className="mobile-drawer__category-skeleton" />
+                    ))}
                   </div>
-                ))}
+                )}
+                {!isCategoriesLoading && categories.length === 0 && (
+                  <p className="mobile-drawer__categories-empty">هنوز دسته‌بندی‌ای ثبت نشده است.</p>
+                )}
+                {!isCategoriesLoading && categories.length > 0 && (
+                  <div className="mobile-drawer__category-list">
+                    {categories.map((category) => (
+                      <Link
+                        key={category.id}
+                        href={`/categories/${category.slug}`}
+                        className="mobile-drawer__category-item"
+                        onClick={() => setIsDrawerOpen(false)}
+                      >
+                        <span className="mobile-drawer__category-icon" aria-hidden="true">
+                          {category.image ? (
+                            <img src={category.image} alt="" />
+                          ) : (
+                            <span>{category.name.slice(0, 1)}</span>
+                          )}
+                        </span>
+                        <span className="mobile-drawer__category-text">
+                          <strong>{category.name}</strong>
+                          {category.description && <span>{category.description}</span>}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             </aside>
             {isDrawerOpen && <div className="drawer-backdrop" onClick={() => setIsDrawerOpen(false)} />}
@@ -189,7 +237,15 @@ export default function Header() {
                   pathname.startsWith('/categories') ||
                   pathname.startsWith('/products');
 
-                return <NavMenu key={link.href} label={link.label} isActive={isStoreActive} />;
+                return (
+                  <NavMenu
+                    key={link.href}
+                    label={link.label}
+                    isActive={isStoreActive}
+                    categories={categories}
+                    isLoading={isCategoriesLoading}
+                  />
+                );
               }
 
               return (

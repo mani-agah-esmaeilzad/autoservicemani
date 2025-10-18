@@ -1,127 +1,90 @@
 'use client';
 
-import { useEffect, useRef, useState, type FocusEvent, type MouseEvent as ReactMouseEvent } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FocusEvent,
+  type MouseEvent as ReactMouseEvent
+} from 'react';
 import Link from 'next/link';
+import type { Category } from '@/lib/types';
 
-type MegaMenuLink = {
-  href: string;
-  label: string;
-  icon: string;
-  description: string;
-};
-
-type CollectionHighlight = {
-  title: string;
-  href: string;
-  accent: string;
-  blurb: string;
-};
-
-export const categoryGroups: Array<{ title: string; accent: string; links: MegaMenuLink[] }> = [
-  {
-    title: 'روغن‌ها و مایعات',
-    accent: 'var(--color-primary)',
-    links: [
-      {
-        href: '/categories/engine-oils',
-        label: 'روغن موتور',
-        icon: '/images/categories/engine-oil.svg',
-        description: 'سنتتیک، نیمه‌سنتتیک و ویژه فیلتر DPF'
-      },
-      {
-        href: '/categories/transmission',
-        label: 'روغن گیربکس',
-        icon: '/images/categories/transmission.svg',
-        description: 'ATF، CVT و روغن دنده دستی'
-      },
-      {
-        href: '/categories/brake-fluid',
-        label: 'روغن ترمز',
-        icon: '/images/categories/brake-fluid.svg',
-        description: 'استاندارد DOT و مایع خنک‌کننده'
-      }
-    ]
-  },
-  {
-    title: 'مصرفی و قطعات',
-    accent: '#0b8c3c',
-    links: [
-      {
-        href: '/categories/filters',
-        label: 'فیلترها',
-        icon: '/images/categories/filter.svg',
-        description: 'هوا، روغن، کابین و فیلتر سوخت'
-      },
-      {
-        href: '/categories/spark-plugs',
-        label: 'شمع و ایگنیشن',
-        icon: '/images/categories/ignition.svg',
-        description: 'شمع سوزنی، کوئل و سیم‌های ولتاژ'
-      },
-      {
-        href: '/categories/belts',
-        label: 'تسمه‌ها',
-        icon: '/images/categories/belt.svg',
-        description: 'تسمه تایم، دینام و هرزگردها'
-      }
-    ]
-  },
-  {
-    title: 'لوازم جانبی و مراقبت',
-    accent: '#0053d6',
-    links: [
-      {
-        href: '/categories/car-care',
-        label: 'مراقبت خودرو',
-        icon: '/images/categories/car-care.svg',
-        description: 'شست‌وشو، واکس، پولیش و نانو پوشش'
-      },
-      {
-        href: '/categories/accessories',
-        label: 'لوازم جانبی',
-        icon: '/images/categories/accessories.svg',
-        description: 'نورپردازی، نظم‌دهنده و آپشن‌های کابین'
-      },
-      {
-        href: '/categories/electronics',
-        label: 'تجهیزات الکترونیکی',
-        icon: '/images/categories/electronics.svg',
-        description: 'دوربین، دیاگ همراه و باتری یدکی'
-      }
-    ]
-  }
+const accentPalette = ['var(--color-primary)', '#0b8c3c', '#0053d6', '#f97316', '#0ea5e9'];
+const fallbackBlurbs = [
+  'ارسال سریع و پشتیبانی فنی در تمام مراحل خرید',
+  'سازگار با خودروهای محبوب بازار ایران',
+  'با ضمانت اصالت و تاریخ تولید به‌روز',
+  'پیشنهاد کارشناسان اتوسرویس مانی برای سرویس دوره‌ای',
+  'امکان رزرو سرویس حضوری همراه با خرید'
 ];
 
-const collectionHighlights: CollectionHighlight[] = [
+const collectionHighlights = [
   {
     title: 'پکیج سرویس دوره‌ای',
     href: '/store?collection=maintenance',
     accent: 'var(--color-primary)',
-    blurb: 'هر آنچه برای سرویس ۱۰ هزار کیلومتر نیاز دارید در یک پکیج اقتصادی.'
+    blurb: 'کامل‌ترین انتخاب برای سرویس ۱۰ هزار کیلومتر همراه با فیلتر و مکمل.'
   },
   {
-    title: 'کیت‌های دیتیلینگ حرفه‌ای',
+    title: 'کیت دیتیلینگ حرفه‌ای',
     href: '/store?collection=detailing',
     accent: '#f97316',
-    blurb: 'ظاهری درخشان با انتخاب بهترین محصولات مراقبت از بدنه و کابین.'
+    blurb: 'درخشش بدنه و کابین با مجموعه کامل شوینده، واکس و نانوپوشش.'
   },
   {
-    title: 'تجهیزات سفر ایمن',
+    title: 'سفر بدون دغدغه',
     href: '/store?collection=travel',
     accent: '#0ea5e9',
-    blurb: 'از جامپ استارتر تا کیت کمک‌های اولیه برای سفرهای بدون دغدغه.'
+    blurb: 'از جامپ‌استارتر تا کیت کمک‌های اولیه برای مسیرهای طولانی.'
   }
 ];
 
 type NavMenuProps = {
   isActive?: boolean;
   label?: string;
+  categories?: Category[];
+  isLoading?: boolean;
 };
 
-export default function NavMenu({ isActive = false, label = 'فروشگاه' }: NavMenuProps) {
+function resolveAccent(index: number) {
+  return accentPalette[index % accentPalette.length];
+}
+
+function resolveBlurb(category: Category, index: number) {
+  if (category.description?.trim()) {
+    return category.description.trim();
+  }
+  return fallbackBlurbs[index % fallbackBlurbs.length];
+}
+
+export default function NavMenu({
+  isActive = false,
+  label = 'فروشگاه',
+  categories = [],
+  isLoading = false
+}: NavMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
+
+  const featuredCategories = useMemo(() => {
+    if (!categories.length) {
+      return [] as Category[];
+    }
+    const featured = categories.filter((category) => category.featured);
+    if (featured.length >= 6) {
+      return featured.slice(0, 6);
+    }
+    const remainder = categories.filter((category) => !category.featured);
+    return [...featured, ...remainder].slice(0, 6);
+  }, [categories]);
+
+  const supportingCategories = useMemo(
+    () => categories.filter((category) => !featuredCategories.some((item) => item.id === category.id)),
+    [categories, featuredCategories]
+  );
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -215,68 +178,126 @@ export default function NavMenu({ isActive = false, label = 'فروشگاه' }: 
       <div className={`category-menu ${isOpen ? 'open' : ''}`} role="menu">
         <div className="category-menu__content">
           <aside className="category-menu__summary">
-            <div className="category-menu__summary-header">
-              <span className="category-menu__summary-badge">جدید</span>
-              <h3>همه چیز برای سرویس دوره‌ای</h3>
-            </div>
+            <div className="category-menu__summary-badge">کاتالوگ هوشمند</div>
+            <h3>همه تجهیزات سرویس خودرو در یک نگاه</h3>
             <p>
-              از روغن موتورهای پریمیوم تا ابزار تخصصی؛ برای هر سرویس دوره‌ای و تیونینگ قطعه پیدا کنید.
+              جدیدترین قطعات مصرفی، روغن‌های تخصصی و ابزار حرفه‌ای با امکان مشاوره آنلاین برای هر مدل خودرو.
             </p>
-            <ul>
-              <li>پیشنهادهای هوشمند بر اساس مدل خودرو</li>
-              <li>امکان رزرو سرویس در محل همزمان با خرید</li>
-              <li>پشتیبانی ۲۴ ساعته توسط کارشناسان فنی</li>
+            <ul className="category-menu__summary-list">
+              <li>پیشنهاد شخصی‌سازی شده براساس خودروی شما</li>
+              <li>رزرو سرویس حضوری همزمان با خرید کالا</li>
+              <li>ضمانت اصالت و تاریخ تولید تازه تمامی کالاها</li>
             </ul>
-            <Link href="/assistant" className="btn btn-ghost btn-small">
-              گفتگو با دستیار هوشمند
-            </Link>
+            <div className="category-menu__summary-actions">
+              <Link href="/assistant" className="btn btn-ghost btn-small" onClick={() => setIsOpen(false)}>
+                گفتگو با دستیار هوشمند
+              </Link>
+              <Link href="/services" className="btn btn-link" onClick={() => setIsOpen(false)}>
+                مشاهده خدمات حضوری
+              </Link>
+            </div>
+            <div className="category-menu__summary-illustration" aria-hidden="true" />
           </aside>
-          <div className="category-menu__groups">
-            {categoryGroups.map((group) => (
-              <div key={group.title} className="category-menu__group">
-                <div className="category-menu__group-header">
-                  <span className="category-menu__group-accent" style={{ background: group.accent }} />
-                  <h4>{group.title}</h4>
-                </div>
-                <div className="category-menu__links">
-                  {group.links.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className="category-menu__link"
-                      role="menuitem"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <span className="category-menu__link-icon" aria-hidden="true">
-                        <img src={link.icon} alt="" />
-                      </span>
-                      <span className="category-menu__link-text">
-                        <strong>{link.label}</strong>
-                        <span>{link.description}</span>
-                      </span>
-                    </Link>
-                  ))}
-                </div>
+
+          <div className="category-menu__grid">
+            {isLoading && (
+              <>
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <div key={`category-skeleton-${index}`} className="category-menu__card category-menu__card--skeleton">
+                    <span className="category-menu__card-icon" />
+                    <div className="category-menu__card-body">
+                      <span className="category-menu__card-line" />
+                      <span className="category-menu__card-line" />
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
+
+            {!isLoading && featuredCategories.length === 0 && (
+              <div className="category-menu__empty">
+                <strong>هنوز دسته‌بندی فعالی ثبت نشده است.</strong>
+                <p>برای نمایش گزینه‌ها در مگا منو، از طریق پنل مدیریت دسته‌بندی‌های جدید بسازید.</p>
               </div>
-            ))}
+            )}
+
+            {!isLoading &&
+              featuredCategories.map((category, index) => {
+                const accent = resolveAccent(index);
+                const blurb = resolveBlurb(category, index);
+                return (
+                  <Link
+                    key={category.id}
+                    href={`/categories/${category.slug}`}
+                    className="category-menu__card"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <span
+                      className="category-menu__card-icon"
+                      style={{
+                        background: `linear-gradient(135deg, ${accent} 0%, rgba(255,255,255,0.12) 100%)`
+                      }}
+                    >
+                      {category.image ? (
+                        <img src={category.image} alt="" />
+                      ) : (
+                        <span className="category-menu__card-initial" aria-hidden="true">
+                          {category.name.slice(0, 1)}
+                        </span>
+                      )}
+                    </span>
+                    <div className="category-menu__card-body">
+                      <strong>{category.name}</strong>
+                      <p>{blurb}</p>
+                    </div>
+                    <span className="category-menu__card-caret" aria-hidden="true" />
+                  </Link>
+                );
+              })}
           </div>
         </div>
         <footer className="category-menu__footer">
-          {collectionHighlights.map((item) => (
-            <Link
-              key={item.title}
-              href={item.href}
-              className="category-menu__collection"
-              onClick={() => setIsOpen(false)}
-            >
-              <span className="category-menu__collection-accent" style={{ background: item.accent }} />
-              <div>
-                <strong>{item.title}</strong>
-                <p>{item.blurb}</p>
-              </div>
-              <span className="category-menu__collection-caret" aria-hidden="true" />
-            </Link>
-          ))}
+          <div className="category-menu__footer-highlights">
+            {collectionHighlights.map((item) => (
+              <Link
+                key={item.title}
+                href={item.href}
+                className="category-menu__collection"
+                onClick={() => setIsOpen(false)}
+              >
+                <span className="category-menu__collection-accent" style={{ background: item.accent }} />
+                <div>
+                  <strong>{item.title}</strong>
+                  <p>{item.blurb}</p>
+                </div>
+                <span className="category-menu__collection-caret" aria-hidden="true" />
+              </Link>
+            ))}
+          </div>
+          {categories.length > 0 && (
+            <div className="category-menu__footer-tags" role="list">
+              {featuredCategories.map((category) => (
+                <Link
+                  key={`tag-${category.id}`}
+                  href={`/categories/${category.slug}`}
+                  className="category-menu__tag"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {category.name}
+                </Link>
+              ))}
+              {supportingCategories.map((category) => (
+                <Link
+                  key={`tag-${category.id}`}
+                  href={`/categories/${category.slug}`}
+                  className="category-menu__tag category-menu__tag--ghost"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {category.name}
+                </Link>
+              ))}
+            </div>
+          )}
         </footer>
       </div>
     </div>

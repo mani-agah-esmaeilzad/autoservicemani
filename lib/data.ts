@@ -4,6 +4,7 @@ import { getPrismaClient } from './prisma';
 import type {
   Brand,
   Category,
+  CategoryInput,
   ChatMessage,
   ChatSession,
   Order,
@@ -62,6 +63,7 @@ const emptyDashboard: UserDashboard = {
 
 let supportTickets: SupportTicket[] = [];
 let aiSessions: ChatSession[] = [];
+let fallbackCategories: Category[] = [];
 
 function isPrismaUnavailableError(error: unknown): boolean {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -107,6 +109,17 @@ async function withTableFallback<T>(
 
 function toJsonValue(value: unknown): Prisma.InputJsonValue {
   return value as Prisma.InputJsonValue;
+}
+
+function slugify(value: string): string {
+  return value
+    .normalize('NFKD')
+    .replace(/[ـ]/g, '')
+    .replace(/[\s_]+/g, '-')
+    .replace(/[^\p{L}\p{N}-]+/gu, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase();
 }
 
 function parseJsonArray<T>(value: Prisma.JsonValue | null | undefined): T[] {
@@ -211,20 +224,24 @@ function normalizeOrder(record: Prisma.OrderGetPayload<{}>): Order {
   };
 }
 
+function normalizeCategory(record: Prisma.CategoryGetPayload<{}>): Category {
+  return {
+    id: record.id,
+    slug: record.slug,
+    name: record.name,
+    description: record.description ?? '',
+    image: record.image ?? '',
+    featured: record.featured
+  };
+}
+
 export async function listCategories(): Promise<Category[]> {
   return withTableFallback(async (client) => {
     const records = await client.category.findMany({
       orderBy: { name: 'asc' }
     });
-    return records.map((category) => ({
-      id: category.id,
-      slug: category.slug,
-      name: category.name,
-      description: category.description ?? '',
-      image: category.image ?? '',
-      featured: category.featured
-    }));
-  }, []);
+    return records.map((category) => normalizeCategory(category));
+  }, fallbackCategories.map((category) => ({ ...category })));
 }
 
 export async function listFeaturedCategories(): Promise<Category[]> {
@@ -233,15 +250,80 @@ export async function listFeaturedCategories(): Promise<Category[]> {
       where: { featured: true },
       orderBy: { name: 'asc' }
     });
-    return records.map((category) => ({
-      id: category.id,
-      slug: category.slug,
-      name: category.name,
-      description: category.description ?? '',
-      image: category.image ?? '',
-      featured: category.featured
-    }));
-  }, []);
+    return records.map((category) => normalizeCategory(category));
+  }, fallbackCategories.filter((category) => category.featured));
+}
+
+export async function upsertCategory(input: CategoryInput): Promise<Category> {
+  const normalizedName = input.name?.trim();
+  if (!normalizedName) {
+    throw new Error('CATEGORY_NAME_REQUIRED');
+  }
+
+  const normalizedSlug = slugify(input.slug?.trim() || normalizedName) || `category-${Date.now()}`;
+  const normalizedDescription = input.description?.trim() ?? '';
+  const normalizedImage = input.image?.trim() ?? '';
+  const identifier = input.id ?? `cat-${Date.now()}`;
+
+  if (
+    fallbackCategories.some(
+      (category) => category.slug === normalizedSlug && category.id !== identifier
+    )
+  ) {
+    throw new Error('CATEGORY_SLUG_EXISTS');
+  }
+
+  const prepared: Category = {
+    id: identifier,
+    slug: normalizedSlug,
+    name: normalizedName,
+    description: normalizedDescription,
+    image: normalizedImage,
+    featured: Boolean(input.featured)
+  };
+
+  const saved = await withTableFallback(
+    async (client) => {
+      const record = await client.category.upsert({
+        where: { id: prepared.id },
+        update: {
+          slug: prepared.slug,
+          name: prepared.name,
+          description: prepared.description,
+          image: prepared.image,
+          featured: prepared.featured ?? false
+        },
+        create: {
+          id: prepared.id,
+          slug: prepared.slug,
+          name: prepared.name,
+          description: prepared.description,
+          image: prepared.image,
+          featured: prepared.featured ?? false
+        }
+      });
+      return normalizeCategory(record);
+    },
+    prepared
+  );
+
+  fallbackCategories = fallbackCategories
+    .filter((category) => category.id !== saved.id)
+    .concat({ ...saved })
+    .sort((a, b) => a.name.localeCompare(b.name, 'fa')); // ensure consistent order offline
+
+  return saved;
+}
+
+export async function deleteCategory(categoryId: string): Promise<void> {
+  await withTableFallback(
+    async (client) => {
+      await client.category.delete({ where: { id: categoryId } });
+    },
+    undefined
+  );
+
+  fallbackCategories = fallbackCategories.filter((category) => category.id !== categoryId);
 }
 
 export async function listBrands(): Promise<Brand[]> {
