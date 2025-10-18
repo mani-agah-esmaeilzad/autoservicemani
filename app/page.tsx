@@ -6,6 +6,10 @@ import HomeHighlights from '@/components/HomeHighlights';
 import HomeServices from '@/components/HomeServices';
 import HomeShowcase from '@/components/HomeShowcase';
 import HomeTestimonials from '@/components/HomeTestimonials';
+import HomeStats from '@/components/HomeStats';
+import HomeGallery from '@/components/HomeGallery';
+import HomeInsights from '@/components/HomeInsights';
+import HomeCTA from '@/components/HomeCTA';
 import { listBrands, listFeaturedCategories, listProducts, listServices } from '@/lib/data';
 
 export default async function HomePage() {
@@ -22,7 +26,9 @@ export default async function HomePage() {
   return (
     <>
       <HeroBanner />
+      <HomeStats />
       <HomeHighlights />
+      <HomeGallery />
       <HomeShowcase />
       <CategoryGrid categories={categories} />
       <BrandCarousel brands={brands} />
@@ -41,6 +47,8 @@ export default async function HomePage() {
         />
       )}
       <HomeServices services={services} />
+      <HomeInsights />
+      <HomeCTA />
       <HomeTestimonials />
     </>
   );
