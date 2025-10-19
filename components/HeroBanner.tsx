@@ -14,6 +14,11 @@ export default function HeroBanner() {
             تجربه‌ای تازه از خرید روغن موتور، فیلترها و قطعات مصرفی به همراه رزرو سرویس در محل و دستیار هوشمند فارسی‌زبان. همه‌چیز با
             طراحی مدرن و در چند کلیک در اختیار شماست.
           </p>
+          <ul className="hero-points">
+            <li>ارسال همان‌روز در تهران و کرج</li>
+            <li>مشاوره فنی با دستیار هوشمند فارسی</li>
+            <li>تضمین اصالت و سرویس نصب در محل</li>
+          </ul>
           <div className="hero-actions">
             <Link href="/store" className="btn btn-primary">
               ورود به فروشگاه
