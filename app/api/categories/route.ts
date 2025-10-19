@@ -30,6 +30,12 @@ function mapCategoryError(error: unknown): NextResponse {
         { status: 409 }
       );
     }
+    if (error.message === 'PRISMA_UNAVAILABLE') {
+      return NextResponse.json(
+        { error: 'اتصال به پایگاه داده برقرار نشد. لطفاً تنظیمات دیتابیس را بررسی کنید.' },
+        { status: 503 }
+      );
+    }
   }
 
   return NextResponse.json(

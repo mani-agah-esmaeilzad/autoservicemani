@@ -2,6 +2,9 @@ import ProductCard from '@/components/ProductCard';
 import { findCategoryBySlug, listProductsByCategory } from '@/lib/data';
 import type { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 interface CategoryPageProps {
   params: { slug: string };
 }

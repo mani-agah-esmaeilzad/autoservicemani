@@ -64,6 +64,7 @@ const emptyDashboard: UserDashboard = {
 let supportTickets: SupportTicket[] = [];
 let aiSessions: ChatSession[] = [];
 let fallbackCategories: Category[] = [];
+const PRISMA_UNAVAILABLE_ERROR = 'PRISMA_UNAVAILABLE';
 
 function isPrismaUnavailableError(error: unknown): boolean {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -284,48 +285,61 @@ export async function upsertCategory(input: CategoryInput): Promise<Category> {
     featured: Boolean(input.featured)
   };
 
-  const saved = await withTableFallback(
-    async (client) => {
-      const record = await client.category.upsert({
-        where: { id: prepared.id },
-        update: {
-          slug: prepared.slug,
-          name: prepared.name,
-          description: prepared.description,
-          image: prepared.image,
-          featured: prepared.featured ?? false
-        },
-        create: {
-          id: prepared.id,
-          slug: prepared.slug,
-          name: prepared.name,
-          description: prepared.description,
-          image: prepared.image,
-          featured: prepared.featured ?? false
-        }
-      });
-      return normalizeCategory(record);
-    },
-    prepared
-  );
+  const client = getPrismaClient();
+  if (!client) {
+    throw new Error(PRISMA_UNAVAILABLE_ERROR);
+  }
 
-  fallbackCategories = fallbackCategories
-    .filter((category) => category.id !== saved.id)
-    .concat({ ...saved })
-    .sort((a, b) => a.name.localeCompare(b.name, 'fa')); // ensure consistent order offline
+  try {
+    const record = await client.category.upsert({
+      where: { id: prepared.id },
+      update: {
+        slug: prepared.slug,
+        name: prepared.name,
+        description: prepared.description,
+        image: prepared.image,
+        featured: prepared.featured ?? false
+      },
+      create: {
+        id: prepared.id,
+        slug: prepared.slug,
+        name: prepared.name,
+        description: prepared.description,
+        image: prepared.image,
+        featured: prepared.featured ?? false
+      }
+    });
+    const saved = normalizeCategory(record);
 
-  return saved;
+    fallbackCategories = fallbackCategories
+      .filter((category) => category.id !== saved.id)
+      .concat({ ...saved })
+      .sort((a, b) => a.name.localeCompare(b.name, 'fa'));
+
+    return saved;
+  } catch (error) {
+    if (isPrismaUnavailableError(error)) {
+      throw new Error(PRISMA_UNAVAILABLE_ERROR);
+    }
+    throw error;
+  }
 }
 
 export async function deleteCategory(categoryId: string): Promise<void> {
-  await withTableFallback(
-    async (client) => {
-      await client.category.delete({ where: { id: categoryId } });
-    },
-    undefined
-  );
+  const client = getPrismaClient();
+  if (!client) {
+    throw new Error(PRISMA_UNAVAILABLE_ERROR);
+  }
 
-  fallbackCategories = fallbackCategories.filter((category) => category.id !== categoryId);
+  try {
+    await client.category.delete({ where: { id: categoryId } });
+    fallbackCategories = fallbackCategories.filter((category) => category.id !== categoryId);
+  } catch (error) {
+    if (isPrismaUnavailableError(error)) {
+      throw new Error(PRISMA_UNAVAILABLE_ERROR);
+    }
+    throw error;
+  }
 }
 
 export async function findCategoryBySlug(slug: string): Promise<Category | null> {
@@ -351,9 +365,18 @@ export async function findCategoryBySlug(slug: string): Promise<Category | null>
         a.name.localeCompare(b.name, 'fa')
       );
     }
+    return category;
   }
 
-  return category;
+  if (!fallbackCategory) {
+    const categories = await listCategories();
+    const resolved = categories.find((item) => item.slug === normalizedSlug) ?? null;
+    if (resolved) {
+      return resolved;
+    }
+  }
+
+  return fallbackCategory;
 }
 
 export async function listBrands(): Promise<Brand[]> {
