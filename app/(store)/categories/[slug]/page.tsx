@@ -1,5 +1,5 @@
 import ProductCard from '@/components/ProductCard';
-import { listCategories, listProductsByCategory } from '@/lib/data';
+import { findCategoryBySlug, listProductsByCategory } from '@/lib/data';
 import type { Metadata } from 'next';
 
 interface CategoryPageProps {
@@ -7,8 +7,7 @@ interface CategoryPageProps {
 }
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-  const categories = await listCategories();
-  const category = categories.find((item) => item.slug === params.slug);
+  const category = await findCategoryBySlug(params.slug);
   return {
     title: category ? `${category.name} | اتو سرویس مانی` : 'دسته‌بندی فروشگاه',
     description: category?.description
@@ -16,8 +15,7 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
 }
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
-  const categories = await listCategories();
-  const category = categories.find((item) => item.slug === params.slug);
+  const category = await findCategoryBySlug(params.slug);
   const products = await listProductsByCategory(params.slug);
 
   if (!category) {

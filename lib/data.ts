@@ -240,7 +240,9 @@ export async function listCategories(): Promise<Category[]> {
     const records = await client.category.findMany({
       orderBy: { name: 'asc' }
     });
-    return records.map((category) => normalizeCategory(category));
+    const categories = records.map((category) => normalizeCategory(category));
+    fallbackCategories = categories.map((category) => ({ ...category }));
+    return categories;
   }, fallbackCategories.map((category) => ({ ...category })));
 }
 
@@ -326,6 +328,34 @@ export async function deleteCategory(categoryId: string): Promise<void> {
   fallbackCategories = fallbackCategories.filter((category) => category.id !== categoryId);
 }
 
+export async function findCategoryBySlug(slug: string): Promise<Category | null> {
+  const normalizedSlug = slugify(slug);
+  if (!normalizedSlug) {
+    return null;
+  }
+
+  const fallbackCategory = fallbackCategories.find((category) => category.slug === normalizedSlug) ?? null;
+
+  const category = await withTableFallback(
+    async (client) => {
+      const record = await client.category.findUnique({ where: { slug: normalizedSlug } });
+      return record ? normalizeCategory(record) : null;
+    },
+    fallbackCategory
+  );
+
+  if (category) {
+    const exists = fallbackCategories.some((item) => item.id === category.id);
+    if (!exists) {
+      fallbackCategories = [...fallbackCategories, { ...category }].sort((a, b) =>
+        a.name.localeCompare(b.name, 'fa')
+      );
+    }
+  }
+
+  return category;
+}
+
 export async function listBrands(): Promise<Brand[]> {
   return withTableFallback(async (client) => {
     const records = await client.brand.findMany({
@@ -346,8 +376,10 @@ export async function listProducts(): Promise<Product[]> {
 }
 
 export async function listProductsByCategory(slug: string): Promise<Product[]> {
+  const normalizedSlug = slugify(slug);
+
   return withTableFallback(async (client) => {
-    const category = await client.category.findUnique({ where: { slug } });
+    const category = await client.category.findUnique({ where: { slug: normalizedSlug } });
     if (!category) {
       return [];
     }
