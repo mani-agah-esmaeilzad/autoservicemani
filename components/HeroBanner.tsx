@@ -2,59 +2,65 @@ import Link from 'next/link';
 
 export default function HeroBanner() {
   return (
-    <section className="section">
-      <div className="container hero">
-        <div>
-          <span className="badge">فروشگاه تخصصی تعویض روغن</span>
+    <section className="hero-section">
+      <div className="hero-section__backdrop" aria-hidden />
+      <div className="container hero hero--inspired">
+        <div className="hero__content">
+          <span className="hero__pill">فروشگاه هوشمند تعویض روغن و قطعات خودرو</span>
           <h1 className="hero-heading">
-            تجربه‌ای مینیمال و حرفه‌ای از نگهداری خودرو با <span className="text-primary">Auto Service Mani</span>
+            نگهداری خودرو را با <span className="text-primary">Auto Service Mani</span> هوشمند کنید
           </h1>
-          <p style={{ color: 'var(--color-muted)', marginBottom: '1.75rem' }}>
-            سفارش آنلاین روغن موتور، قطعات مصرفی و دریافت مشاوره تخصصی با دستیار هوشمند اتو سرویس مانی در کنار ارسال سریع و تضمین اصالت کالا.
+          <p className="hero__subtitle">
+            تجربه‌ای تازه از خرید روغن موتور، فیلترها و قطعات مصرفی به همراه رزرو سرویس در محل و دستیار هوشمند فارسی‌زبان. همه‌چیز با
+            طراحی مدرن و در چند کلیک در اختیار شماست.
           </p>
           <div className="hero-actions">
             <Link href="/store" className="btn btn-primary">
               ورود به فروشگاه
             </Link>
             <Link href="/assistant" className="btn btn-ghost">
-              مشاوره فنی هوشمند
+              دستیار هوشمند مانی
             </Link>
           </div>
+          <dl className="hero__metrics">
+            <div>
+              <dt>سرویس موفق</dt>
+              <dd>+850</dd>
+            </div>
+            <div>
+              <dt>رضایت مشتریان</dt>
+              <dd>۴.۹ از ۵</dd>
+            </div>
+            <div>
+              <dt>پشتیبانی تخصصی</dt>
+              <dd>۲۴/۷</dd>
+            </div>
+          </dl>
         </div>
-        <div className="hero-visual">
-          <div className="card hero-card">
-            <div style={{ display: 'grid', gap: '0.75rem' }}>
+        <div className="hero-visual hero-visual--inspired">
+          <div className="hero-visual__glow" aria-hidden />
+          <div className="hero-visual__primary">
+            <div className="hero-visual__badge">پیشنهاد روز مانی</div>
+            <img src="/images/hero/car-front.svg" alt="تصویر خودرو و بسته سرویس کامل" />
+            <div className="hero-visual__tag">سرویس کامل روغن و فیلتر</div>
+          </div>
+          <div className="hero-visual__secondary">
+            <div className="hero-visual__card">
+              <strong>باشگاه مشتریان</strong>
+              <p>
+                با هر خرید امتیاز بگیرید و از سرویس دوره‌ای در محل و تخفیف‌های ویژه برندهای معتبر بهره‌مند شوید.
+              </p>
+            </div>
+            <div className="hero-visual__card hero-visual__card--stats">
               <div>
-                <strong style={{ fontSize: '1.25rem' }}>باشگاه مشتریان</strong>
-                <p style={{ color: 'var(--color-muted)', margin: '0.35rem 0 0' }}>
-                  با هر خرید امتیاز بگیرید و از خدمات VIP شامل سرویس دوره‌ای در محل بهره‌مند شوید.
-                </p>
+                <span>ارسال کمتر از</span>
+                <strong>۳ ساعت</strong>
               </div>
-              <div className="hero-stats">
-                <div className="hero-stat-card">
-                  <strong>+850</strong>
-                  <p style={{ margin: 0, color: 'var(--color-muted)' }}>خدمات موفق</p>
-                </div>
-                <div className="hero-stat-card">
-                  <strong>4.9/5</strong>
-                  <p style={{ margin: 0, color: 'var(--color-muted)' }}>رضایت مشتریان</p>
-                </div>
+              <div>
+                <span>کارشناسان تایید شده</span>
+                <strong>+۴۰ نفر</strong>
               </div>
             </div>
-          </div>
-          <div className="hero-gallery">
-            <figure>
-              <img src="/images/hero/car-front.svg" alt="رندر خودروی قرمز در نمای روبه‌رو" />
-              <figcaption>تعویض روغن تخصصی</figcaption>
-            </figure>
-            <figure>
-              <img src="/images/hero/car-detail.svg" alt="جزئیات خدمات دیتیلینگ خودرو" />
-              <figcaption>دیتیلینگ و نظافت حرفه‌ای</figcaption>
-            </figure>
-            <figure>
-              <img src="/images/hero/garage.svg" alt="گاراژ هوشمند اتو سرویس مانی" />
-              <figcaption>سرویس در محل و گاراژ هوشمند</figcaption>
-            </figure>
           </div>
         </div>
       </div>

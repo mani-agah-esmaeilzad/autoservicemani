@@ -1,9 +1,6 @@
 import ProductExplorer from '@/components/ProductExplorer';
 import { listCategories, listProducts } from '@/lib/data';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
 export const metadata = {
   title: 'فروشگاه آنلاین اتو سرویس مانی',
   description: 'مشاهده و خرید اینترنتی تمام محصولات تخصصی نگهداری خودرو'

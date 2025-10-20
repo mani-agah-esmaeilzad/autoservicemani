@@ -25,17 +25,18 @@ export default function CategoryGrid({ categories }: Props) {
             <Link
               key={category.id}
               href={`/categories/${category.slug}`}
-              className="category-card"
-              style={{
-                backgroundImage: `url(${category.image})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center'
-              }}
+              className="category-card category-card--modern"
             >
-              <div className="category-card__content">
-                <div style={{ fontSize: '1.2rem', fontWeight: 700 }}>{category.name}</div>
-                <p className="category-card__description">{category.description}</p>
+              <div className="category-card__icon" aria-hidden="true">
+                {category.image ? <img src={category.image} alt="" /> : <span>{category.name.slice(0, 1)}</span>}
               </div>
+              <div className="category-card__content">
+                <div className="category-card__title">{category.name}</div>
+                <p className="category-card__description">
+                  {category.description ?? 'مشاهده محصولات منتخب این دسته'}
+                </p>
+              </div>
+              <span className="category-card__cta">مشاهده</span>
             </Link>
           ))}
         </div>

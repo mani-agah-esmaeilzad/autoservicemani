@@ -8,16 +8,6 @@ if (!databaseUrl) {
   process.exit(0);
 }
 
-const isCI = process.env.CI === 'true' || Boolean(process.env.VERCEL);
-const shouldSkipInCI = process.env.PRISMA_DEPLOY_ON_BUILD !== 'true';
-const explicitSkip = process.env.SKIP_PRISMA_MIGRATIONS === 'true';
-
-if (explicitSkip || (isCI && shouldSkipInCI)) {
-  const reason = explicitSkip ? 'SKIP_PRISMA_MIGRATIONS flag detected' : 'CI environment detected';
-  console.log(`[prisma-deploy] ${reason}. Prisma migrations will be skipped.`);
-  process.exit(0);
-}
-
 function run(command) {
   execSync(command, { stdio: 'inherit', env: process.env });
 }
