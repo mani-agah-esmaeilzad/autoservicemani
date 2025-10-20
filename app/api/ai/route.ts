@@ -41,13 +41,13 @@ async function buildFallbackAnswer(message: string) {
     return `برای فیلتر باکیفیت، برندهایی مانند ${filterProducts.map((item) => item.brand).join('، ')} پیشنهاد می‌شوند. هنگام نصب، اورینگ را با روغن تمیز آغشته کنید و پس از استارت، نشتی را بررسی نمایید.`;
   }
 
-  if (normalized.includes('سرویس') || normalized.includes('service')) {
+  if (normalized.includes('سرویس') || normalized.includes('service') || normalized.includes('پک')) {
     if (services.length > 0) {
-      return `پکیج‌های خدمات حضوری ما شامل: ${services
+      return `برای کامل کردن سبد خرید می‌توانید از پک‌های پیشنهادی ما استفاده کنید: ${services
         .map((service) => `${service.name} (${service.duration})`)
-        .join('، ')} است. می‌توانید از طریق پنل کاربری زمان رزرو را مشخص کنید.`;
+        .join('، ')}. هر پک شامل ترکیب هماهنگ روغن و فیلتر است.`;
     }
-    return 'برای رزرو سرویس حضوری لطفاً با تیم پشتیبانی تماس بگیرید یا از طریق پنل کاربری درخواست جدید ثبت کنید.';
+    return 'در حال حاضر پک آماده‌ای ثبت نشده است. می‌توانید با انتخاب روغن و فیلتر از فروشگاه سبد خود را بسازید.';
   }
 
   if (normalized.includes('برند') || normalized.includes('brand')) {
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
       const model = genAI.getGenerativeModel({
         model: 'gemini-2.0-flash',
         systemInstruction:
-          'شما دستیار هوشمند اتو سرویس مانی هستید. همیشه به فارسی پاسخ دهید و توصیه‌های ایمن و قابل اجرا برای سرویس و نگهداری خودرو ارائه کنید. در صورت نیاز مشتری را به کارشناسان انسانی ارجاع دهید.'
+          'شما دستیار هوشمند مانی اویل هستید. همیشه به فارسی پاسخ دهید و توصیه‌های ایمن و قابل اجرا برای انتخاب روغن، فیلتر و افزودنی ارائه کنید. در صورت نیاز مشتری را به کارشناسان انسانی ارجاع دهید.'
       });
 
       const historyEntries = (body.history ?? []).map((entry) => ({

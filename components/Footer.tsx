@@ -12,10 +12,10 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="container site-footer__top">
         <div>
-          <div style={{ fontSize: '1.35rem', fontWeight: 700, marginBottom: '0.75rem' }}>Auto Service Mani</div>
+          <div style={{ fontSize: '1.35rem', fontWeight: 700, marginBottom: '0.75rem' }}>Mani Oil</div>
           <p>
-            اتو سرویس مانی با ارائه خدمات تخصصی تعویض روغن و فروش آنلاین بهترین برندهای لوازم مصرفی، تجربه‌ای مدرن و مطمئن از
-            نگهداری خودرو فراهم می‌کند.
+            مانی اویل فروشگاهی تخصصی برای روغن، فیلتر و افزودنی‌های اورجینال است؛ با اطلاعات فنی کامل، ارسال سریع و پشتیبانی
+            کارشناسی کنار شما هستیم.
           </p>
         </div>
 
@@ -33,19 +33,19 @@ export default function Footer() {
         <div>
           <div style={{ fontWeight: 700, marginBottom: '0.85rem' }}>اطلاعات تماس</div>
           <p>
-            تهران، اتوبان ستاری، نبش خیابان خودرو سرویس
+            تهران، بلوار آیت‌الله کاشانی، مرکز خرید مانی اویل
             <br />
             تلفن: 021-88990011
             <br />
-            ایمیل: support@autoservicemani.ir
+            ایمیل: support@manioil.ir
           </p>
         </div>
       </div>
 
       <div className="site-footer__bottom">
         <div className="container site-footer__bottom-inner">
-          <span>© {new Date().getFullYear()} Auto Service Mani. تمام حقوق محفوظ است.</span>
-          <span>طراحی با ❤️ توسط تیم اتو سرویس مانی</span>
+          <span>© {new Date().getFullYear()} Mani Oil. تمام حقوق محفوظ است.</span>
+          <span>طراحی با ❤️ توسط تیم مانی اویل</span>
         </div>
       </div>
     </footer>

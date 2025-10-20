@@ -23,7 +23,7 @@ export default function AccountDashboard({ dashboard }: AccountDashboardProps) {
             <span className="badge">حساب کاربری</span>
             <h1>برای مشاهده داشبورد وارد شوید</h1>
             <p style={{ color: 'var(--color-muted)', maxWidth: '36rem', margin: '0 auto' }}>
-              با ورود یا ثبت‌نام می‌توانید سفارش‌ها، تیکت‌های پشتیبانی و گفتگوهای دستیار هوشمند اتو سرویس مانی را در یک صفحه دنبال کنید.
+              با ورود یا ثبت‌نام می‌توانید سفارش‌ها، تیکت‌های پشتیبانی و گفتگوهای دستیار هوشمند مانی اویل را در یک صفحه دنبال کنید.
             </p>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2rem' }}>
               <Link href="/login" className="btn btn-primary">
@@ -56,7 +56,7 @@ export default function AccountDashboard({ dashboard }: AccountDashboardProps) {
             <span className="badge">حساب کاربری من</span>
             <h1>خوش آمدید، {displayName}</h1>
             <p>
-              مدیریت سفارش‌ها، نوتیفیکیشن‌ها و ارتباط مستقیم با تیم پشتیبانی Auto Service Mani.
+              مدیریت سفارش‌ها، نوتیفیکیشن‌ها و ارتباط مستقیم با تیم پشتیبانی Mani Oil.
             </p>
           </div>
           <div className="account-page__membership">

@@ -2,34 +2,32 @@ const testimonials = [
   {
     name: 'مهدی ق.',
     role: 'مالک پژو ۲۰۷',
-    quote:
-      'با اتو سرویس مانی انتخاب روغن مناسب دغدغه نیست؛ سفارش آنلاین و نصب در محل زمان زیادی برای من ذخیره کرد.'
+    quote: 'تنوع روغن‌های مانی اویل باعث شد دقیقاً ویسکوزیته پیشنهادی سازنده را پیدا کنم و با ارسال سریع دریافت کنم.'
   },
   {
     name: 'سحر الف.',
-    role: 'مدیر ناوگان حمل‌ونقل',
-    quote:
-      'پنل مدیریتی امکان پایش وضعیت خودروهای ناوگان و رزرو گروهی سرویس را فراهم کرده است.'
+    role: 'مدیر ناوگان شرکتی',
+    quote: 'پنل کاربری سفارش‌های عمده و پیگیری موجودی را ساده کرده و فاکتورهای خرید به‌صورت خودکار صادر می‌شوند.'
   },
   {
     name: 'رضا ن.',
     role: 'علاقه‌مند تیونینگ',
-    quote: 'دسته‌بندی‌ها و فیلترهای دقیق فروشگاه باعث شد خیلی سریع قطعات سازگار با خودرویم را پیدا کنم.'
+    quote: 'فیلترهای تخصصی و افزودنی‌های کمیاب را همیشه در همین فروشگاه پیدا می‌کنم و توضیحات فنی دقیق است.'
   }
 ];
 
 export default function HomeTestimonials() {
   return (
     <section className="section section--testimonials" aria-labelledby="home-testimonials-heading">
-      <div className="container home-testimonials home-testimonials--reference">
+      <div className="container home-testimonials home-testimonials--minimal">
         <header className="home-testimonials__header">
-          <span className="badge">صدای مشتریان</span>
-          <h2 id="home-testimonials-heading">رانندگان درباره اتو سرویس مانی چه می‌گویند؟</h2>
-          <p>بازخورد واقعی کسانی که سرویس در محل، خرید قطعات اصل و پشتیبانی ما را تجربه کرده‌اند.</p>
+          <span className="badge">نظر مشتریان</span>
+          <h2 id="home-testimonials-heading">خریداران درباره مانی اویل چه می‌گویند؟</h2>
+          <p>بازخورد مشتریانی که روغن و فیلترهای مورد نیازشان را از فروشگاه ما تهیه کرده‌اند.</p>
         </header>
         <div className="home-testimonials__grid">
           {testimonials.map((testimonial) => (
-            <figure key={testimonial.name} className="home-testimonial-card home-testimonial-card--reference">
+            <figure key={testimonial.name} className="home-testimonial-card home-testimonial-card--minimal">
               <blockquote>{testimonial.quote}</blockquote>
               <figcaption>
                 <strong>{testimonial.name}</strong>

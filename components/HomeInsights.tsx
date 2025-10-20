@@ -7,16 +7,14 @@ const insights = [
     image: '/images/hero/car-front.svg'
   },
   {
-    title: 'چک‌لیست سرویس قبل از سفر',
-    excerpt:
-      'با این چک‌لیست ۱۲ مرحله‌ای مطمئن شوید خودرو شما برای سفرهای جاده‌ای آماده است و از خرابی‌های ناگهانی جلوگیری کنید.',
+    title: 'چک‌لیست قبل از تعویض روغن',
+    excerpt: 'پیش از سفارش، این مراحل را بررسی کنید تا نوع روغن و فیلتر مناسب خودروی شما مشخص شود.',
     link: '#',
     image: '/images/hero/car-detail.svg'
   },
   {
-    title: 'نکات طلایی دیتیلینگ حرفه‌ای در خانه',
-    excerpt:
-      'آموزش مرحله به مرحله برای برق انداختن بدنه و کابین خودرو با استفاده از محصولات موجود در فروشگاه.',
+    title: 'مقایسه فیلترهای محبوب بازار',
+    excerpt: 'مزایا و معایب فیلترهای پرفروش را کنار هم گذاشته‌ایم تا خرید آگاهانه‌تری انجام دهید.',
     link: '#',
     image: '/images/hero/garage.svg'
   }
@@ -28,11 +26,11 @@ export default function HomeInsights() {
       <div className="container home-insights">
         <header className="home-insights__header">
           <div>
-            <p className="eyebrow">آکادمی اتو سرویس مانی</p>
-            <h2 id="home-insights-heading">دانش فنی برای مراقبت از خودرو</h2>
+            <p className="eyebrow">راهنمای خرید مانی اویل</p>
+            <h2 id="home-insights-heading">دانش فنی برای انتخاب بهترین محصول</h2>
           </div>
-          <a className="button button--ghost" href="/services">
-            مشاهده همه مقالات
+          <a className="button button--ghost" href="/assistant">
+            دریافت مشاوره
           </a>
         </header>
         <div className="home-insights__grid">

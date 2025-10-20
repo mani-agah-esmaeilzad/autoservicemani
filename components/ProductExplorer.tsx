@@ -64,10 +64,10 @@ export default function ProductExplorer({ products, categories, initialQuery = '
   }, [products, query, selectedCategory, selectedBrand, sortKey]);
 
   return (
-    <div className="product-explorer product-explorer--reference">
-      <aside className={`product-filters product-filters--reference ${filtersOpen ? 'product-filters--open' : ''}`}>
+    <div className="product-explorer product-explorer--minimal">
+      <aside className={`product-filters product-filters--minimal ${filtersOpen ? 'product-filters--open' : ''}`}>
         <div className="product-filters__header">
-          <h2>فیلتر هوشمند</h2>
+          <h2>فیلتر محصولات</h2>
           <button type="button" className="btn btn-ghost product-filters__close" onClick={() => setFiltersOpen(false)}>
             بستن
           </button>
@@ -111,7 +111,7 @@ export default function ProductExplorer({ products, categories, initialQuery = '
         <div className="product-filters__group">
           <label htmlFor="filter-sort">ترتیب نمایش</label>
           <select id="filter-sort" value={sortKey} onChange={(event) => setSortKey(event.target.value as SortKey)}>
-            <option value="recommended">پیشنهاد اتو سرویس مانی</option>
+            <option value="recommended">پیشنهاد مانی اویل</option>
             <option value="price-asc">ارزان‌ترین</option>
             <option value="price-desc">گران‌ترین</option>
             <option value="rating-desc">بالاترین امتیاز</option>
@@ -123,7 +123,7 @@ export default function ProductExplorer({ products, categories, initialQuery = '
         </button>
       </aside>
 
-      <section className="product-results product-results--reference">
+      <section className="product-results product-results--minimal">
         <div className="product-results__toolbar">
           <button type="button" className="product-results__filters-toggle" onClick={() => setFiltersOpen(true)}>
             فیلترها
@@ -131,7 +131,7 @@ export default function ProductExplorer({ products, categories, initialQuery = '
           <div className="product-results__info">
             <span>{filteredProducts.length} کالا</span>
             <select value={sortKey} onChange={(event) => setSortKey(event.target.value as SortKey)}>
-              <option value="recommended">پیشنهاد اتو سرویس مانی</option>
+              <option value="recommended">پیشنهاد مانی اویل</option>
               <option value="price-asc">ارزان‌ترین</option>
               <option value="price-desc">گران‌ترین</option>
               <option value="rating-desc">بالاترین امتیاز</option>
@@ -145,7 +145,7 @@ export default function ProductExplorer({ products, categories, initialQuery = '
             <p>فیلترها را تغییر دهید تا نتایج بیشتری ببینید.</p>
           </div>
         ) : (
-          <div className="product-results__grid product-results__grid--reference">
+          <div className="product-results__grid product-results__grid--minimal">
             {filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

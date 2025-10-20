@@ -222,8 +222,8 @@ export default function Header() {
         <Link href="/" className="brand">
           <span className="brand-badge">ASM</span>
           <span className="brand-text">
-            <strong>اتو سرویس مانی</strong>
-            <small>Auto Service Mani</small>
+            <strong>مانی اویل</strong>
+            <small>Mani Oil</small>
           </span>
         </Link>
 

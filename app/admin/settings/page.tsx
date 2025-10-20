@@ -5,14 +5,14 @@ import type { CSSProperties } from 'react';
 
 export default function AdminSettingsPage() {
   const [form, setForm] = useState({
-    storeName: 'Auto Service Mani',
-    supportEmail: 'support@autoservicemani.ir',
+    storeName: 'Mani Oil',
+    supportEmail: 'support@manioil.ir',
     phone: '021-88990011',
-    address: 'تهران، اتوبان ستاری، خیابان خودرو، پلاک 18',
+    address: 'تهران، بلوار آیت‌الله کاشانی، مرکز خرید مانی اویل',
     allowReservations: true,
     enableAiAssistant: true,
     enableVoiceReplies: true,
-    knowledgeBaseUrl: 'https://autoservicemani.ir/knowledge-base',
+    knowledgeBaseUrl: 'https://manioil.ir/knowledge-base',
     aiEscalationThreshold: 70,
     assistantKeyConfigured: false
   });
@@ -65,7 +65,7 @@ export default function AdminSettingsPage() {
             checked={form.allowReservations}
             onChange={(event) => setForm((prev) => ({ ...prev, allowReservations: event.target.checked }))}
           />
-          فعال‌سازی رزرو آنلاین خدمات
+          نمایش پک‌های پیشنهادی در فروشگاه
         </label>
         <button type="button" className="btn btn-primary">
           ذخیره تغییرات

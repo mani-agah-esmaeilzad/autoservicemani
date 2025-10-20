@@ -2,9 +2,9 @@ import AiAssistant from '@/components/AiAssistant';
 import { listAiSessions } from '@/lib/data';
 
 export const metadata = {
-  title: 'دستیار فنی هوشمند | Auto Service Mani',
+  title: 'دستیار فنی هوشمند | Mani Oil',
   description:
-    'چت هوشمند برای دریافت پاسخ تخصصی درباره نگهداری خودرو، انتخاب روغن و عیب‌یابی فنی در اتو سرویس مانی.'
+    'چت هوشمند برای دریافت پاسخ تخصصی درباره انتخاب روغن، فیلتر و نگهداری خودرو در مانی اویل.'
 };
 
 export default async function AssistantPage() {

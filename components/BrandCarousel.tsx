@@ -15,11 +15,11 @@ export default function BrandCarousel({ brands }: BrandCarouselProps) {
   }
 
   return (
-    <section className="section section--brands" aria-label="برندهای همکار اتو سرویس مانی">
+    <section className="section section--brands" aria-label="برندهای همکار مانی اویل">
       <div className="container brand-showcase">
         <header className="brand-showcase__header">
-          <h2>همکاری با برندهای جهانی</h2>
-          <p>انتخابی مطمئن از میان برندهای اصل روغن موتور، فیلتر و لوازم مصرفی محبوب.</p>
+          <h2>برندهای مورد اعتماد رانندگان</h2>
+          <p>روغن‌ها و فیلترهای اورجینال از برندهای جهانی با تاریخ تولید جدید و زنجیره تامین رسمی.</p>
         </header>
         <div className="brand-showcase__scroller" aria-hidden>
           <div className="brand-showcase__track">

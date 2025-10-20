@@ -2,8 +2,8 @@ import ProductExplorer from '@/components/ProductExplorer';
 import { listCategories, listProducts } from '@/lib/data';
 
 export const metadata = {
-  title: 'فروشگاه آنلاین اتو سرویس مانی',
-  description: 'مشاهده و خرید اینترنتی تمام محصولات تخصصی نگهداری خودرو'
+  title: 'فروشگاه آنلاین مانی اویل',
+  description: 'مشاهده و خرید اینترنتی روغن، فیلتر و افزودنی‌های تخصصی خودرو'
 };
 
 interface StorePageProps {

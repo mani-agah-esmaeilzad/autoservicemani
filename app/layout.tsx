@@ -6,16 +6,14 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Auto Service Mani | فروشگاه آنلاین لوازم و خدمات خودرو',
-  description:
-    'اتو سرویس مانی؛ فروشگاه آنلاین تخصصی برای تجهیزات، روغن و خدمات تعویض روغن خودرو با امکان سفارش آنلاین و مدیریت پیشرفته.',
-  keywords: ['auto service', 'mani', 'خدمات خودرو', 'فروشگاه آنلاین', 'تعویض روغن'],
-  metadataBase: new URL('https://auto-service-mani.example.com'),
+  title: 'Mani Oil | فروشگاه تخصصی روغن و فیلتر خودرو',
+  description: 'مانی اویل فروشگاهی آنلاین برای خرید روغن موتور، فیلتر و افزودنی‌های اورجینال با ارسال سریع و مشاوره تخصصی.',
+  keywords: ['mani oil', 'روغن موتور', 'فیلتر خودرو', 'فروشگاه آنلاین'],
+  metadataBase: new URL('https://mani-oil.example.com'),
   openGraph: {
-    title: 'Auto Service Mani | فروشگاه تخصصی خدمات خودرو',
-    description:
-      'خرید اینترنتی انواع روغن موتور، فیلتر و خدمات خودرو با ارسال سریع و مدیریت حرفه‌ای سفارش‌ها.',
-    siteName: 'Auto Service Mani',
+    title: 'Mani Oil | فروشگاه تخصصی روغن و فیلتر خودرو',
+    description: 'خرید آنلاین روغن و فیلتر با ضمانت اصالت، موجودی به‌روز و پشتیبانی کارشناسی از مانی اویل.',
+    siteName: 'Mani Oil',
     type: 'website',
     locale: 'fa_IR'
   }

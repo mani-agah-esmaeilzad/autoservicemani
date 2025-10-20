@@ -21,7 +21,7 @@ interface ProductPageProps {
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const product = await findProductBySlug(params.slug);
   return {
-    title: product ? `${product.name} | Auto Service Mani` : 'محصول یافت نشد',
+    title: product ? `${product.name} | Mani Oil` : 'محصول یافت نشد',
     description: product?.description
   };
 }
@@ -95,8 +95,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <p>تمامی کالاها با گارانتی اصالت و تاریخ تولید جدید عرضه می‌شوند.</p>
             </div>
             <div>
-              <strong>نصب در محل</strong>
-              <p>رزرو سرویس تعویض و بازدید فنی هم‌زمان با ثبت سفارش محصول.</p>
+              <strong>راهنمای تخصصی</strong>
+              <p>دستیار هوشمند مانی اویل در انتخاب روغن و فیلتر سازگار با خودرو همراه شماست.</p>
             </div>
           </div>
 
@@ -160,8 +160,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           <div className="product-page__cta-grid">
             <Link href="/services" className="product-page__cta">
-              <span>رزرو سرویس حضوری</span>
-              <small>هماهنگی با تکنسین‌های اتو سرویس مانی</small>
+              <span>مشاهده پک‌های پیشنهادی</span>
+              <small>ترکیب‌های آماده شامل روغن، فیلتر و افزودنی</small>
             </Link>
             <Link href="/assistant" className="product-page__cta product-page__cta--ghost">
               <span>گفتگو با دستیار هوشمند</span>
@@ -206,7 +206,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
         {serviceHighlights.length > 0 && (
           <section className="card product-services">
-            <h2>خدمات پیشنهادی پس از خرید</h2>
+            <h2>پک‌های مکمل پیشنهادی</h2>
             <ul>
               {serviceHighlights.map((service) => (
                 <li key={service.id}>
@@ -275,7 +275,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <ProductCarousel
           products={relatedProducts}
           title="کالاهای مکمل این محصول"
-          description="گزیده‌ای از محصولات مرتبط برای تکمیل سرویس خودرو"
+          description="گزیده‌ای از محصولات مرتبط برای تکمیل سبد خرید"
         />
       )}
     </div>

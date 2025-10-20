@@ -2,82 +2,52 @@ import Link from 'next/link';
 
 export default function HeroBanner() {
   return (
-    <section className="hero-section hero-section--reference">
-      <div className="hero-section__pattern" aria-hidden />
-      <div className="container hero hero--reference">
-        <div className="hero__copy">
-          <span className="hero__eyebrow">سرویس کامل خودرو با یک کلیک</span>
-          <h1>
-            تجربه فروشگاه و سرویس هوشمند <span className="text-primary">اتو سرویس مانی</span>
+    <section className="hero hero--minimal" aria-labelledby="hero-heading">
+      <div className="container hero-minimal">
+        <div className="hero-minimal__copy">
+          <span className="hero-minimal__eyebrow">فروشگاه تخصصی روغن و فیلتر</span>
+          <h1 id="hero-heading">
+            هر آنچه موتور خودروی شما نیاز دارد در <span className="text-primary">مانی اویل</span>
           </h1>
           <p>
-            ترکیبی از فروشگاه آنلاین قطعات اصل، رزرو سرویس در محل و دستیار هوشمند فارسی؛ هر آنچه برای نگهداری خودرو لازم
-            دارید در یک داشبورد یکپارچه فراهم است.
+            مجموعه‌ای از روغن‌های اورجینال، فیلترهای تخصصی و افزودنی‌های تاییدشده را یکجا ببینید، مقایسه کنید و با ارسال سریع
+            دریافت کنید.
           </p>
-          <div className="hero__actions">
+          <div className="hero-minimal__actions">
             <Link href="/store" className="btn btn-primary btn-large">
-              مشاهده محصولات محبوب
+              مشاهده محصولات
             </Link>
             <Link href="/assistant" className="btn btn-ghost btn-large">
-              گفت‌وگو با دستیار هوشمند
+              راهنمای انتخاب روغن
             </Link>
           </div>
-          <div className="hero__quick-actions" aria-label="اقدامات سریع">
+          <dl className="hero-minimal__metrics">
             <div>
-              <span>ارسال اکسپرس در تهران</span>
-              <strong>کمتر از ۳ ساعت</strong>
+              <dt>+۳۵۰ مدل محصول</dt>
+              <dd>روغن موتور، گیربکس و انواع فیلتر</dd>
             </div>
             <div>
-              <span>مشاوره فنی ۲۴/۷</span>
-              <strong>کارشناسان تایید شده</strong>
+              <dt>ارسال سریع</dt>
+              <dd>تحویل ۲۴ ساعته در تهران</dd>
             </div>
             <div>
-              <span>ضمانت اصالت کالا</span>
-              <strong>مرجوعی ۷ روزه</strong>
+              <dt>ضمانت اصالت</dt>
+              <dd>پلمپ کارخانه و تاریخ تولید جدید</dd>
             </div>
-          </div>
+          </dl>
         </div>
 
-        <div className="hero__aside">
-          <div className="hero-card hero-card--primary">
-            <div className="hero-card__header">
-              <span className="badge">رزرو سرویس حضوری</span>
-              <h2>تعویض روغن در محل شما</h2>
-              <p>روز و ساعت سرویس را انتخاب کنید تا کارشناس مانی با قطعات اصل به محل شما اعزام شود.</p>
+        <div className="hero-minimal__media" aria-hidden>
+          <div className="hero-minimal__card">
+            <img src="/images/products/shell-ultra.svg" alt="روغن موتور" />
+            <div>
+              <strong>Shell Helix Ultra</strong>
+              <span>سری پرطرفدار روغن‌های تمام‌سنتتیک</span>
             </div>
-            <div className="hero-card__content">
-              <div>
-                <span>زمان‌بندی آزاد</span>
-                <strong>۷ روز هفته</strong>
-              </div>
-              <div>
-                <span>هزینه سرویس</span>
-                <strong>از ۴۹۰٬۰۰۰ تومان</strong>
-              </div>
-            </div>
-            <Link href="/checkout" className="btn btn-primary btn-block">
-              رزرو سرویس سریع
-            </Link>
           </div>
-
-          <div className="hero-card hero-card--secondary">
-            <div className="hero-card__media" aria-hidden>
-              <img src="/images/hero/car-front.svg" alt="کیفیت سرویس خودرو" />
-            </div>
-            <dl className="hero-card__stats">
-              <div>
-                <dt>میانگین امتیاز مشتریان</dt>
-                <dd>۴.۹ از ۵</dd>
-              </div>
-              <div>
-                <dt>سرویس موفق این ماه</dt>
-                <dd>+۳۲۰</dd>
-              </div>
-              <div>
-                <dt>نمایندگی برندهای معتبر</dt>
-                <dd>+۲۵</dd>
-              </div>
-            </dl>
+          <div className="hero-minimal__tag">
+            <span>پیشنهاد سرد</span>
+            <strong>روغن مناسب زمستان</strong>
           </div>
         </div>
       </div>

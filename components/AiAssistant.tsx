@@ -77,7 +77,7 @@ const markdownComponents: Components = {
 const quickPrompts = [
   'چه روغنی برای ترافیک سنگین تهران پیشنهاد می‌دهید؟',
   'چطور می‌توانم صدای غیرعادی موتور را بررسی کنم؟',
-  'برای سفر طولانی چه سرویس‌هایی را انجام دهم؟'
+  'برای سفر طولانی چه روغنی مناسب است؟'
 ];
 
 export default function AiAssistant({ initialSessions }: AiAssistantProps) {
@@ -326,7 +326,7 @@ export default function AiAssistant({ initialSessions }: AiAssistantProps) {
       <section className="ai-shell__body">
         <header className="ai-shell__body-header">
           <div>
-            <h1>دستیار هوشمند اتو سرویس مانی</h1>
+            <h1>دستیار هوشمند مانی اویل</h1>
             <p>پرسش‌های فنی خودرو، تشخیص صداهای غیرعادی و انتخاب قطعات را به دستیار هوشمند بسپارید.</p>
           </div>
           <div className="ai-shell__toggles">
@@ -384,7 +384,7 @@ export default function AiAssistant({ initialSessions }: AiAssistantProps) {
             </button>
           </form>
           <p className="ai-shell__composer-hint">
-            دستیار هوشمند اتو سرویس مانی بر پایه دانش تخصصی خودرو پاسخ می‌دهد و جایگزین معاینه حضوری نیست.
+            دستیار هوشمند مانی اویل بر پایه دانش تخصصی خودرو پاسخ می‌دهد و جایگزین معاینه حضوری نیست.
           </p>
         </footer>
       </section>

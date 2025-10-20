@@ -31,7 +31,7 @@ export default function ProductCarousel({ products, title, description }: Produc
       <div className="container product-carousel-shell">
         <header className="product-carousel-shell__header">
           <div>
-            <span className="badge">پیشنهاد ویژه</span>
+            <span className="badge">منتخب هفته</span>
             <h2 id="product-carousel-heading">{title}</h2>
             {description && <p>{description}</p>}
           </div>

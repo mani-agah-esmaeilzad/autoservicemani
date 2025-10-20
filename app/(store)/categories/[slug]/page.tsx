@@ -12,7 +12,7 @@ interface CategoryPageProps {
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const category = await findCategoryBySlug(params.slug);
   return {
-    title: category ? `${category.name} | اتو سرویس مانی` : 'دسته‌بندی فروشگاه',
+    title: category ? `${category.name} | مانی اویل` : 'دسته‌بندی فروشگاه',
     description: category?.description
   };
 }

@@ -37,7 +37,7 @@ export default function LoginPage() {
       <div className="container auth-page">
         <div className="card auth-card">
           <header className="auth-card__header">
-            <span className="badge">ورود به اتو سرویس مانی</span>
+            <span className="badge">ورود به مانی اویل</span>
             <h1>حساب کاربری خود را مدیریت کنید</h1>
             <p>برای مشاهده سفارش‌ها، پیگیری تیکت‌ها و دسترسی به دستیار هوشمند وارد شوید.</p>
           </header>

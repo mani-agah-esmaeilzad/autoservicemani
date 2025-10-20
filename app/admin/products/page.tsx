@@ -108,7 +108,7 @@ export default function AdminProductsPage() {
       gallery,
       specifications: form.specifications ?? existing?.specifications ?? [],
       compatibility: form.compatibility ?? existing?.compatibility ?? [],
-      warranty: form.warranty ?? existing?.warranty ?? 'گارانتی اصالت Auto Service Mani',
+      warranty: form.warranty ?? existing?.warranty ?? 'گارانتی اصالت Mani Oil',
       shipping: form.shipping ?? existing?.shipping ?? 'ارسال استاندارد 2 تا 4 روز کاری',
       maintenanceTips: form.maintenanceTips ?? existing?.maintenanceTips ?? [],
       faqs: form.faqs ?? existing?.faqs ?? [],

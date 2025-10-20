@@ -1,8 +1,8 @@
 import type { CSSProperties } from 'react';
 
 export const metadata = {
-  title: 'تماس با اتو سرویس مانی',
-  description: 'مسیرهای ارتباطی با تیم فروش و پشتیبانی Auto Service Mani'
+  title: 'تماس با مانی اویل',
+  description: 'مسیرهای ارتباطی با تیم فروش و پشتیبانی Mani Oil'
 };
 
 export default function ContactPage() {
@@ -12,11 +12,11 @@ export default function ContactPage() {
         <div className="card" style={{ display: 'grid', gap: '0.75rem' }}>
           <h1>ارتباط با ما</h1>
           <p style={{ color: 'var(--color-muted)' }}>
-            تیم پشتیبانی 24/7 آماده پاسخگویی به سوالات، پیگیری سفارش‌ها و هماهنگی خدمات حضوری است.
+            تیم پشتیبانی مانی اویل آماده پاسخگویی به سوالات، پیگیری سفارش‌ها و ارائه مشاوره خرید است.
           </p>
           <div>
             <strong>آدرس فروشگاه مرکزی</strong>
-            <p style={{ color: 'var(--color-muted)' }}>تهران، اتوبان ستاری، خیابان خودرو، پلاک 18</p>
+            <p style={{ color: 'var(--color-muted)' }}>تهران، بلوار آیت‌الله کاشانی، مرکز خرید مانی اویل</p>
           </div>
           <div>
             <strong>تلفن</strong>
@@ -24,7 +24,7 @@ export default function ContactPage() {
           </div>
           <div>
             <strong>ایمیل</strong>
-            <p style={{ color: 'var(--color-muted)' }}>support@autoservicemani.ir</p>
+            <p style={{ color: 'var(--color-muted)' }}>support@manioil.ir</p>
           </div>
         </div>
 

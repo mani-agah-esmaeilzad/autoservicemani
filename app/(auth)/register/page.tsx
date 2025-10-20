@@ -47,7 +47,7 @@ export default function RegisterPage() {
       <div className="container auth-page">
         <div className="card auth-card">
           <header className="auth-card__header">
-            <span className="badge">ثبت‌نام در اتو سرویس مانی</span>
+            <span className="badge">ثبت‌نام در مانی اویل</span>
             <h1>به خانواده مشتریان ما بپیوندید</h1>
             <p>با ساخت حساب کاربری، سفارش‌ها و گفتگوهای دستیار هوشمند را در یک داشبورد مدیریت کنید.</p>
           </header>

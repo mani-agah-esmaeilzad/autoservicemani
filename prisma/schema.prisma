@@ -1,4 +1,4 @@
-// Prisma schema for Auto Service Mani
+// Prisma schema for Mani Oil
 generator client {
   provider = "prisma-client-js"
 }

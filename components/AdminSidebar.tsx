@@ -10,7 +10,7 @@ const links = [
   { href: '/admin/categories', label: 'مدیریت دسته‌بندی‌ها' },
   { href: '/admin/customers', label: 'مدیریت مشتریان' },
   { href: '/admin/support', label: 'پشتیبانی و تیکت‌ها' },
-  { href: '/admin/ai', label: 'دستیار هوشمند اتو سرویس مانی' },
+  { href: '/admin/ai', label: 'دستیار هوشمند مانی اویل' },
   { href: '/admin/reports', label: 'گزارش‌ها و تحلیل' },
   { href: '/admin/settings', label: 'تنظیمات سامانه' }
 ];

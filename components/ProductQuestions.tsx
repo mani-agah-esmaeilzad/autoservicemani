@@ -53,7 +53,7 @@ export default function ProductQuestions({ productId, initialQuestions }: Produc
       <header>
         <div>
           <h3>پرسش و پاسخ کاربران</h3>
-          <p>سوالات فنی خود را مطرح کنید، تیم اتو سرویس مانی با کمک دستیار هوشمند پاسخ می‌دهد.</p>
+          <p>سوال فنی درباره روغن یا فیلتر دارید؟ دستیار هوشمند و تیم پشتیبانی مانی اویل پاسخ می‌دهند.</p>
         </div>
       </header>
 
