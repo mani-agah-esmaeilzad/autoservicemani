@@ -2,70 +2,82 @@ import Link from 'next/link';
 
 export default function HeroBanner() {
   return (
-    <section className="hero-section">
-      <div className="hero-section__backdrop" aria-hidden />
-      <div className="container hero hero--inspired">
-        <div className="hero__content">
-          <span className="hero__pill">فروشگاه هوشمند تعویض روغن و قطعات خودرو</span>
-          <h1 className="hero-heading">
-            نگهداری خودرو را با <span className="text-primary">Auto Service Mani</span> هوشمند کنید
+    <section className="hero-section hero-section--reference">
+      <div className="hero-section__pattern" aria-hidden />
+      <div className="container hero hero--reference">
+        <div className="hero__copy">
+          <span className="hero__eyebrow">سرویس کامل خودرو با یک کلیک</span>
+          <h1>
+            تجربه فروشگاه و سرویس هوشمند <span className="text-primary">اتو سرویس مانی</span>
           </h1>
-          <p className="hero__subtitle">
-            تجربه‌ای تازه از خرید روغن موتور، فیلترها و قطعات مصرفی به همراه رزرو سرویس در محل و دستیار هوشمند فارسی‌زبان. همه‌چیز با
-            طراحی مدرن و در چند کلیک در اختیار شماست.
+          <p>
+            ترکیبی از فروشگاه آنلاین قطعات اصل، رزرو سرویس در محل و دستیار هوشمند فارسی؛ هر آنچه برای نگهداری خودرو لازم
+            دارید در یک داشبورد یکپارچه فراهم است.
           </p>
-          <ul className="hero-points">
-            <li>ارسال همان‌روز در تهران و کرج</li>
-            <li>مشاوره فنی با دستیار هوشمند فارسی</li>
-            <li>تضمین اصالت و سرویس نصب در محل</li>
-          </ul>
-          <div className="hero-actions">
-            <Link href="/store" className="btn btn-primary">
-              ورود به فروشگاه
+          <div className="hero__actions">
+            <Link href="/store" className="btn btn-primary btn-large">
+              مشاهده محصولات محبوب
             </Link>
-            <Link href="/assistant" className="btn btn-ghost">
-              دستیار هوشمند مانی
+            <Link href="/assistant" className="btn btn-ghost btn-large">
+              گفت‌وگو با دستیار هوشمند
             </Link>
           </div>
-          <dl className="hero__metrics">
+          <div className="hero__quick-actions" aria-label="اقدامات سریع">
             <div>
-              <dt>سرویس موفق</dt>
-              <dd>+850</dd>
+              <span>ارسال اکسپرس در تهران</span>
+              <strong>کمتر از ۳ ساعت</strong>
             </div>
             <div>
-              <dt>رضایت مشتریان</dt>
-              <dd>۴.۹ از ۵</dd>
+              <span>مشاوره فنی ۲۴/۷</span>
+              <strong>کارشناسان تایید شده</strong>
             </div>
             <div>
-              <dt>پشتیبانی تخصصی</dt>
-              <dd>۲۴/۷</dd>
+              <span>ضمانت اصالت کالا</span>
+              <strong>مرجوعی ۷ روزه</strong>
             </div>
-          </dl>
+          </div>
         </div>
-        <div className="hero-visual hero-visual--inspired">
-          <div className="hero-visual__glow" aria-hidden />
-          <div className="hero-visual__primary">
-            <div className="hero-visual__badge">پیشنهاد روز مانی</div>
-            <img src="/images/hero/car-front.svg" alt="تصویر خودرو و بسته سرویس کامل" />
-            <div className="hero-visual__tag">سرویس کامل روغن و فیلتر</div>
+
+        <div className="hero__aside">
+          <div className="hero-card hero-card--primary">
+            <div className="hero-card__header">
+              <span className="badge">رزرو سرویس حضوری</span>
+              <h2>تعویض روغن در محل شما</h2>
+              <p>روز و ساعت سرویس را انتخاب کنید تا کارشناس مانی با قطعات اصل به محل شما اعزام شود.</p>
+            </div>
+            <div className="hero-card__content">
+              <div>
+                <span>زمان‌بندی آزاد</span>
+                <strong>۷ روز هفته</strong>
+              </div>
+              <div>
+                <span>هزینه سرویس</span>
+                <strong>از ۴۹۰٬۰۰۰ تومان</strong>
+              </div>
+            </div>
+            <Link href="/checkout" className="btn btn-primary btn-block">
+              رزرو سرویس سریع
+            </Link>
           </div>
-          <div className="hero-visual__secondary">
-            <div className="hero-visual__card">
-              <strong>باشگاه مشتریان</strong>
-              <p>
-                با هر خرید امتیاز بگیرید و از سرویس دوره‌ای در محل و تخفیف‌های ویژه برندهای معتبر بهره‌مند شوید.
-              </p>
+
+          <div className="hero-card hero-card--secondary">
+            <div className="hero-card__media" aria-hidden>
+              <img src="/images/hero/car-front.svg" alt="کیفیت سرویس خودرو" />
             </div>
-            <div className="hero-visual__card hero-visual__card--stats">
+            <dl className="hero-card__stats">
               <div>
-                <span>ارسال کمتر از</span>
-                <strong>۳ ساعت</strong>
+                <dt>میانگین امتیاز مشتریان</dt>
+                <dd>۴.۹ از ۵</dd>
               </div>
               <div>
-                <span>کارشناسان تایید شده</span>
-                <strong>+۴۰ نفر</strong>
+                <dt>سرویس موفق این ماه</dt>
+                <dd>+۳۲۰</dd>
               </div>
-            </div>
+              <div>
+                <dt>نمایندگی برندهای معتبر</dt>
+                <dd>+۲۵</dd>
+              </div>
+            </dl>
           </div>
         </div>
       </div>

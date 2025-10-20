@@ -1,57 +1,59 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useRef } from 'react';
+import Link from 'next/link';
 import type { Product } from '@/lib/types';
 import ProductCard from './ProductCard';
 
-interface Props {
+interface ProductCarouselProps {
   products: Product[];
   title: string;
   description?: string;
 }
 
-const ITEMS_PER_VIEW = 4;
-
-export default function ProductCarousel({ products, title, description }: Props) {
-  const [index, setIndex] = useState(0);
-  const chunks = useMemo(() => {
-    const chunked: Product[][] = [];
-    for (let i = 0; i < products.length; i += ITEMS_PER_VIEW) {
-      chunked.push(products.slice(i, i + ITEMS_PER_VIEW));
-    }
-    return chunked;
-  }, [products]);
+export default function ProductCarousel({ products, title, description }: ProductCarouselProps) {
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
 
   if (products.length === 0) {
     return null;
   }
 
+  const scrollBy = (direction: number) => {
+    if (!scrollerRef.current) {
+      return;
+    }
+
+    scrollerRef.current.scrollBy({ left: direction * 320, behavior: 'smooth' });
+  };
+
   return (
-    <section className="section" style={{ paddingTop: '0' }}>
-      <div className="container" style={{ display: 'grid', gap: '1.75rem' }}>
-        <div className="carousel-header">
-          <h2 style={{ margin: 0 }}>{title}</h2>
-          {description && <p style={{ color: 'var(--color-muted)', margin: 0 }}>{description}</p>}
-        </div>
-        <div style={{ display: 'grid', gap: '1.25rem' }}>
-          <div className="carousel-grid">
-            {chunks[index]?.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+    <section className="section section--carousel" aria-labelledby="product-carousel-heading">
+      <div className="container product-carousel-shell">
+        <header className="product-carousel-shell__header">
+          <div>
+            <span className="badge">پیشنهاد ویژه</span>
+            <h2 id="product-carousel-heading">{title}</h2>
+            {description && <p>{description}</p>}
           </div>
-          {chunks.length > 1 && (
-            <div className="carousel-dots">
-              {chunks.map((_, chunkIndex) => (
-                <button
-                  key={chunkIndex}
-                  type="button"
-                  onClick={() => setIndex(chunkIndex)}
-                  className={`carousel-dot ${index === chunkIndex ? 'active' : ''}`}
-                  aria-label={`مشاهده اسلاید ${chunkIndex + 1}`}
-                />
-              ))}
+          <div className="product-carousel-shell__actions">
+            <button type="button" onClick={() => scrollBy(-1)} aria-label="اسکرول به راست">
+              ◀
+            </button>
+            <button type="button" onClick={() => scrollBy(1)} aria-label="اسکرول به چپ">
+              ▶
+            </button>
+            <Link href="/store" className="btn btn-ghost btn-small">
+              مشاهده همه
+            </Link>
+          </div>
+        </header>
+
+        <div ref={scrollerRef} className="product-carousel-shell__scroller" role="list">
+          {products.map((product) => (
+            <div key={product.id} role="listitem" className="product-carousel-shell__item">
+              <ProductCard product={product} />
             </div>
-          )}
+          ))}
         </div>
       </div>
     </section>

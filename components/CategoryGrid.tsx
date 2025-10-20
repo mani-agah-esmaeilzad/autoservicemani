@@ -7,38 +7,49 @@ interface Props {
 
 export default function CategoryGrid({ categories }: Props) {
   return (
-    <section className="section" style={{ paddingTop: '0' }}>
-      <div className="container">
-        <div className="category-grid-header">
+    <section className="section section--categories" aria-labelledby="category-section-heading">
+      <div className="container category-section">
+        <header className="category-section__header">
           <div>
-            <h2 style={{ margin: 0 }}>دسته‌بندی‌های پیشنهادی</h2>
-            <p style={{ color: 'var(--color-muted)', margin: '0.35rem 0 0' }}>
-              از میان دسته‌بندی‌های محبوب مشتریان انتخاب کنید.
-            </p>
+            <span className="badge">مرور سریع دسته‌ها</span>
+            <h2 id="category-section-heading">هر آنچه نیاز دارید را در دسته‌بندی‌های هوشمند بیابید</h2>
+            <p>با انتخاب دسته‌بندی مناسب، پیشنهادهای متناسب با خودرو و سابقه خرید شما نمایش داده می‌شود.</p>
           </div>
-          <Link href="/store" style={{ color: 'var(--color-primary)', fontWeight: 600 }}>
-            مشاهده همه محصولات
+          <Link href="/store" className="btn btn-ghost">
+            مشاهده تمام محصولات
           </Link>
-        </div>
-        <div className="category-grid">
-          {categories.map((category) => (
-            <Link
-              key={category.id}
-              href={`/categories/${category.slug}`}
-              className="category-card category-card--modern"
-            >
-              <div className="category-card__icon" aria-hidden="true">
-                {category.image ? <img src={category.image} alt="" /> : <span>{category.name.slice(0, 1)}</span>}
-              </div>
-              <div className="category-card__content">
-                <div className="category-card__title">{category.name}</div>
-                <p className="category-card__description">
-                  {category.description ?? 'مشاهده محصولات منتخب این دسته'}
-                </p>
-              </div>
-              <span className="category-card__cta">مشاهده</span>
+        </header>
+
+        <div className="category-section__layout">
+          <div className="category-section__intro">
+            <h3>پکیج‌های سرویس منتخب</h3>
+            <p>
+              دسته‌بندی‌ها به شکل پکیج طراحی شده‌اند تا سریع‌تر به روغن، فیلتر و لوازم جانبی مورد نیاز دسترسی داشته باشید.
+            </p>
+            <ul>
+              <li>دسته‌بندی بر اساس نوع سرویس و برند خودرو</li>
+              <li>پیشنهادهای ویژه با تخفیف‌های دوره‌ای</li>
+              <li>نمایش محصولات دارای نصب در محل</li>
+            </ul>
+            <Link href="/assistant" className="btn btn-primary btn-small">
+              انتخاب دسته با دستیار هوشمند
             </Link>
-          ))}
+          </div>
+
+          <div className="category-section__grid">
+            {categories.map((category) => (
+              <Link key={category.id} href={`/categories/${category.slug}`} className="category-card category-card--reference">
+                <div className="category-card__icon" aria-hidden="true">
+                  {category.image ? <img src={category.image} alt="" /> : <span>{category.name.slice(0, 1)}</span>}
+                </div>
+                <div className="category-card__body">
+                  <strong>{category.name}</strong>
+                  <p>{category.description ?? 'مشاهده محصولات مرتبط با این دسته‌بندی'}</p>
+                </div>
+                <span className="category-card__arrow" aria-hidden="true" />
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </section>

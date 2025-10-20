@@ -64,34 +64,30 @@ export default function ProductExplorer({ products, categories, initialQuery = '
   }, [products, query, selectedCategory, selectedBrand, sortKey]);
 
   return (
-    <div className="product-explorer">
-      <aside className={`product-filters ${filtersOpen ? 'product-filters--open' : ''}`}>
+    <div className="product-explorer product-explorer--reference">
+      <aside className={`product-filters product-filters--reference ${filtersOpen ? 'product-filters--open' : ''}`}>
         <div className="product-filters__header">
-          <h2>فیلترهای ساده</h2>
+          <h2>فیلتر هوشمند</h2>
           <button type="button" className="btn btn-ghost product-filters__close" onClick={() => setFiltersOpen(false)}>
             بستن
           </button>
         </div>
 
         <div className="product-filters__group">
-          <label htmlFor="filter-query">جستجو در محصولات</label>
+          <label htmlFor="filter-query">جستجو</label>
           <input
             id="filter-query"
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="نام محصول یا برند را وارد کنید"
+            placeholder="نام محصول، برند یا کد فنی"
           />
         </div>
 
         <div className="product-filters__group">
           <label htmlFor="filter-category">دسته‌بندی</label>
-          <select
-            id="filter-category"
-            value={selectedCategory}
-            onChange={(event) => setSelectedCategory(event.target.value)}
-          >
-            <option value="all">همه دسته‌بندی‌ها</option>
+          <select id="filter-category" value={selectedCategory} onChange={(event) => setSelectedCategory(event.target.value)}>
+            <option value="all">همه دسته‌ها</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
@@ -127,13 +123,9 @@ export default function ProductExplorer({ products, categories, initialQuery = '
         </button>
       </aside>
 
-      <section className="product-results">
+      <section className="product-results product-results--reference">
         <div className="product-results__toolbar">
-          <button
-            type="button"
-            className="product-results__filters-toggle"
-            onClick={() => setFiltersOpen(true)}
-          >
+          <button type="button" className="product-results__filters-toggle" onClick={() => setFiltersOpen(true)}>
             فیلترها
           </button>
           <div className="product-results__info">
@@ -153,7 +145,7 @@ export default function ProductExplorer({ products, categories, initialQuery = '
             <p>فیلترها را تغییر دهید تا نتایج بیشتری ببینید.</p>
           </div>
         ) : (
-          <div className="product-results__grid">
+          <div className="product-results__grid product-results__grid--reference">
             {filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

@@ -15,30 +15,24 @@ export default function BrandCarousel({ brands }: BrandCarouselProps) {
   }
 
   return (
-    <section className="section brand-carousel" aria-label="برندهای همکار Auto Service Mani">
-      <div className="container">
-        <header className="brand-carousel__header">
-          <div>
-            <span className="badge">همکاران استراتژیک</span>
-            <h2>برندهای معتبر در فروشگاه ما</h2>
-          </div>
-          <p className="brand-carousel__description">
-            تامین کالا از برندهای جهانی با ضمانت اصالت و زنجیره تامین مستقیم.
-          </p>
+    <section className="section section--brands" aria-label="برندهای همکار اتو سرویس مانی">
+      <div className="container brand-showcase">
+        <header className="brand-showcase__header">
+          <h2>همکاری با برندهای جهانی</h2>
+          <p>انتخابی مطمئن از میان برندهای اصل روغن موتور، فیلتر و لوازم مصرفی محبوب.</p>
         </header>
-        <div className="brand-carousel__viewport" role="presentation">
-          <div className="brand-carousel__track">
+        <div className="brand-showcase__scroller" aria-hidden>
+          <div className="brand-showcase__track">
             {trackItems.map((brand, index) => (
-              <article key={`${brand.id}-${index}`} className="brand-card" aria-label={brand.name}>
-                <img src={brand.logo} alt={`لوگوی ${brand.name}`} />
-                <div className="brand-card__meta">
+              <div key={`${brand.id}-${index}`} className="brand-showcase__item">
+                <div className="brand-showcase__logo">
+                  <img src={brand.logo} alt={`لوگوی ${brand.name}`} />
+                </div>
+                <div className="brand-showcase__meta">
                   <strong>{brand.name}</strong>
                   <span>{brand.tagline}</span>
-                  <small>
-                    تاسیس {brand.founded} • {brand.country}
-                  </small>
                 </div>
-              </article>
+              </div>
             ))}
           </div>
         </div>

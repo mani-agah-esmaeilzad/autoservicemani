@@ -3,33 +3,33 @@ const testimonials = [
     name: 'مهدی ق.',
     role: 'مالک پژو ۲۰۷',
     quote:
-      'با اتو سرویس مانی دیگه دغدغه انتخاب روغن مناسب رو ندارم. پشتیبانی آنلاین و ارسال سریع واقعا عالیه.'
+      'با اتو سرویس مانی انتخاب روغن مناسب دغدغه نیست؛ سفارش آنلاین و نصب در محل زمان زیادی برای من ذخیره کرد.'
   },
   {
     name: 'سحر الف.',
     role: 'مدیر ناوگان حمل‌ونقل',
     quote:
-      'داشبورد مدیریتی و امکان رزرو سرویس دوره‌ای باعث شده هزینه‌های نگهداری ناوگانمون بهینه بشه.'
+      'پنل مدیریتی امکان پایش وضعیت خودروهای ناوگان و رزرو گروهی سرویس را فراهم کرده است.'
   },
   {
     name: 'رضا ن.',
     role: 'علاقه‌مند تیونینگ',
-    quote:
-      'مگا منوی حرفه‌ای و دسته‌بندی دقیق قطعات باعث شد خیلی سریع به قطعه‌ای که می‌خواستم برسم.'
+    quote: 'دسته‌بندی‌ها و فیلترهای دقیق فروشگاه باعث شد خیلی سریع قطعات سازگار با خودرویم را پیدا کنم.'
   }
 ];
 
 export default function HomeTestimonials() {
   return (
-    <section className="section" aria-labelledby="home-testimonials-heading">
-      <div className="container home-testimonials">
-        <header>
-          <h2 id="home-testimonials-heading">اعتماد رانندگان حرفه‌ای</h2>
-          <p>نظرات مشتریان درباره تجربه خرید، نصب و پشتیبانی اتو سرویس مانی.</p>
+    <section className="section section--testimonials" aria-labelledby="home-testimonials-heading">
+      <div className="container home-testimonials home-testimonials--reference">
+        <header className="home-testimonials__header">
+          <span className="badge">صدای مشتریان</span>
+          <h2 id="home-testimonials-heading">رانندگان درباره اتو سرویس مانی چه می‌گویند؟</h2>
+          <p>بازخورد واقعی کسانی که سرویس در محل، خرید قطعات اصل و پشتیبانی ما را تجربه کرده‌اند.</p>
         </header>
         <div className="home-testimonials__grid">
           {testimonials.map((testimonial) => (
-            <figure key={testimonial.name} className="home-testimonial-card">
+            <figure key={testimonial.name} className="home-testimonial-card home-testimonial-card--reference">
               <blockquote>{testimonial.quote}</blockquote>
               <figcaption>
                 <strong>{testimonial.name}</strong>
